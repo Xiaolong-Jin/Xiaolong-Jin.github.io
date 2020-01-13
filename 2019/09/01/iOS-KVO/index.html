@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="一个由不规范的使用 KVO 引起的 crash，出现的有些诡异。前情提要我们在一个 ViewController 中先后声明两个属性 ViewA 和 ViewB12345@interface ViewController&#x2F;&#x2F; 注意这里声明的先后顺序@property (nonatomic, strong) ViewA *viewA;@property (nonatomic, strong) Vie">
+<meta property="og:type" content="article">
+<meta property="og:title" content="一个 KVO 引起的 Crash">
+<meta property="og:url" content="http://yoursite.com/2019/09/01/iOS-KVO/index.html">
+<meta property="og:site_name" content="猫咪不吃小鱼干">
+<meta property="og:description" content="一个由不规范的使用 KVO 引起的 crash，出现的有些诡异。前情提要我们在一个 ViewController 中先后声明两个属性 ViewA 和 ViewB12345@interface ViewController&#x2F;&#x2F; 注意这里声明的先后顺序@property (nonatomic, strong) ViewA *viewA;@property (nonatomic, strong) Vie">
+<meta property="og:image" content="http://yoursite.com/2019/09/01/iOS-KVO/Stack.png">
+<meta property="og:image" content="http://yoursite.com/2019/09/01/iOS-KVO/Crash.png">
+<meta property="article:published_time" content="2019-09-01T06:56:35.000Z">
+<meta property="article:modified_time" content="2019-12-14T02:26:16.895Z">
+<meta property="article:author" content="xiaolong.jin">
+<meta property="article:tag" content="iOS">
+<meta property="article:tag" content="KVO">
+<meta property="article:tag" content="Crash">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/2019/09/01/iOS-KVO/Stack.png">
+  <link rel="canonical" href="http://yoursite.com/2019/09/01/iOS-KVO/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>一个 KVO 引起的 Crash | 猫咪不吃小鱼干</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">猫咪不吃小鱼干</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section">&lt;i class&#x3D;&quot;menu-item-icon fa fa-fw fa-home&quot;&gt;&lt;&#x2F;i&gt; &lt;br&gt;Home</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section">&lt;i class&#x3D;&quot;menu-item-icon fa fa-fw fa-archive&quot;&gt;&lt;&#x2F;i&gt; &lt;br&gt;Archives</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section">&lt;i class&#x3D;&quot;menu-item-icon fa fa-fw fa-th&quot;&gt;&lt;&#x2F;i&gt; &lt;br&gt;Categories</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section">&lt;i class&#x3D;&quot;menu-item-icon fa fa-fw fa-tags&quot;&gt;&lt;&#x2F;i&gt; &lt;br&gt;Tags</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section">&lt;i class&#x3D;&quot;menu-item-icon fa fa-fw fa-users&quot;&gt;&lt;&#x2F;i&gt; &lt;br&gt;About</a>
+
+  </li>
+  </ul>
+
+    
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/01/iOS-KVO/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xiaolong.jin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="猫咪不吃小鱼干">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">一个 KVO 引起的 Crash
+
+          
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2019-09-01 14:56:35" itemprop="dateCreated datePublished" datetime="2019-09-01T14:56:35+08:00">2019-09-01</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2019-12-14 10:26:16" itemprop="dateModified" datetime="2019-12-14T10:26:16+08:00">2019-12-14</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a></span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/iOS/Incredible-Crashes/" itemprop="url" rel="index"><span itemprop="name">Incredible Crashes</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <span id="/2019/09/01/iOS-KVO/" class="post-meta-item leancloud_visitors" data-flag-title="一个 KVO 引起的 Crash" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+        
+      
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2019/09/01/iOS-KVO/#comments" itemprop="discussionUrl"><span class="post-comments-count valine-comment-count" data-xid="/2019/09/01/iOS-KVO/" itemprop="commentCount"></span></a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>一个由不规范的使用 KVO 引起的 crash，出现的有些诡异。</p><h1 id="前情提要"><a href="#前情提要" class="headerlink" title="前情提要"></a>前情提要</h1><p>我们在一个 ViewController 中<strong>先后</strong>声明两个属性 <code>ViewA</code> 和 <code>ViewB</code></p><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">ViewController</span></span></span><br><span class="line"><span class="comment">// 注意这里声明的先后顺序</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) ViewA *viewA;</span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) ViewB *viewB;</span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure><a id="more"></a>
+
+
+
+<p>ViewA 中想要监听 ViewB 的 <code>frame</code> 属性</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">ViewA</span> : <span class="title">UIView</span></span></span><br><span class="line">- (<span class="keyword">void</span>)observeView:(<span class="built_in">UIView</span> *)view;</span><br><span class="line"><span class="comment">// 注意这个 weak</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">weak</span>) <span class="built_in">UIView</span> *observedView;</span><br><span class="line"><span class="keyword">@end</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">ViewA</span></span></span><br><span class="line">- (<span class="keyword">void</span>)dealloc &#123;</span><br><span class="line">  <span class="comment">// 谁监听，谁移除</span></span><br><span class="line">  [_observedView removeObserver:<span class="keyword">self</span> forKeyPath:<span class="string">@"frame"</span>];</span><br><span class="line">&#125;</span><br><span class="line">- (<span class="keyword">void</span>)observeView:(<span class="built_in">UIView</span> *)view &#123;</span><br><span class="line">  _observedView = view;</span><br><span class="line">  [_observedView addObserver:<span class="keyword">self</span> forKeyPath:<span class="string">@"frame"</span> options:<span class="built_in">NSKeyValueObservingOptionNew</span> context:<span class="literal">nil</span>];  </span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
+
+<p>在 ViewController 中执行这个监听操作</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)viewDidLoad &#123;</span><br><span class="line">  _viewA = [[ViewA alloc] init];</span><br><span class="line">  _viewB = [[ViewB alloc] init];</span><br><span class="line">  [_viewA observeView:_viewB];</span><br><span class="line">  <span class="comment">// 由于所有的 View 都会被加载到 UITableView 上，</span></span><br><span class="line">  <span class="comment">// 所以此处不会直接被加载到 self.view 上</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>OK，大致项目结构就是这样子。让我们愉快的运行起来，直到 ViewController 被 pop 的时候。<br>好像也没啥问题😄。。。嗯，别高兴太早，让我们来找个 iOS10 的古董机子跑一下。。。</p>
+<p>Crash 的堆栈信息<br><img src="/2019/09/01/iOS-KVO/Stack.png" alt="Stack"></p>
+<p>Crash 的异常原因<br><img src="/2019/09/01/iOS-KVO/Crash.png" alt="Crash"></p>
+<h1 id="问题查找"><a href="#问题查找" class="headerlink" title="问题查找"></a>问题查找</h1><p>给 ViewB 实现一个 <code>dealloc</code> 方法，运行后 pop <code>ViewController</code>，发现 ViewB 的 <code>dealloc</code> 方法比 ViewA 的 <code>dealloc</code> 方法先执行。并且在 ViewB 的 <code>dealloc</code> 中发生了 Crash。因为 ViewB 这个时候仍被 ViewA 监听着。</p>
+<p><strong>猜测：对象被释放的时候，内部属性按照定义的顺序从下往上释放</strong></p>
+<p>修改 <code>ViewController</code> 中 ViewA、ViewB 的定义顺序</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">ViewController</span></span></span><br><span class="line"><span class="comment">// 注意这里声明的先后顺序</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) ViewB *viewB;</span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) ViewA *viewA;</span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
+<p>在 iOS 10 上运行以后，ViewA 的 <code>dealloc</code> 先于 ViewB 的 <code>dealloc</code> 方法运行，且不发生 Crash。</p>
+<p><strong>为何 TableView 完全展示 ViewA、ViewB 以后，pop <code>ViewController</code>的时候不再发生 Crash？</strong></p>
+<p>将 ViewA、ViewB 添加到 <code>ViewController</code> 的 view 上</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)viewDidLoad &#123;</span><br><span class="line">  _viewA = [[ViewA alloc] init];</span><br><span class="line">  _viewB = [[ViewB alloc] init];</span><br><span class="line">  [_viewA observeView:_viewB];</span><br><span class="line"></span><br><span class="line">  [<span class="keyword">self</span>.view addSubview:_viewA];</span><br><span class="line">  [<span class="keyword">self</span>.view addSubview:_viewB];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>发现，在 pop 的时候，ViewA 的 <code>dealloc</code> 方法先于 ViewB 的 <code>dealloc</code> 方法执行。<br><code>ViewController</code> 在释放的时候，先从下往上释放（减少引用计数）本类的属性，之后释放基类的 view 属性。此时，view.subviews 被<strong>依次</strong>释放。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[<span class="keyword">self</span>.view addSubview:_viewB];</span><br><span class="line">[<span class="keyword">self</span>.view addSubview:_viewA];</span><br></pre></td></tr></table></figure>
+
+<p>当我们调换 ViewA 和 ViewB 的添加顺序以后，发现确实是 ViewB 先于 ViewA 释放。</p>
+<h1 id="解决"><a href="#解决" class="headerlink" title="解决"></a>解决</h1><p>修改 ViewA 中定义的 observedView 的引用，将 weak 改为 strong，确保 ViewB 在被释放的时候，肯定没有其他视图仍对其监听</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">ViewA</span> : <span class="title">UIView</span></span></span><br><span class="line">- (<span class="keyword">void</span>)observeView:(<span class="built_in">UIView</span> *)view;</span><br><span class="line"><span class="comment">// 注意这个 weak</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) <span class="built_in">UIView</span> *observedView;</span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="为何-iOS-11-及以上没有出现问题"><a href="#为何-iOS-11-及以上没有出现问题" class="headerlink" title="为何 iOS 11 及以上没有出现问题"></a>为何 iOS 11 及以上没有出现问题</h1><p>swift4（对应 iOS 11）之后 Apple 对 KVO 做了改进，如同 iOS 9 中的 NSNotification 一样，已经不需要主动移除了。参考 <a href="https://juejin.im/post/5a6ed035518825734108308d" target="_blank" rel="noopener">Swift 4 前后 KVO 的变化</a></p>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/iOS/" rel="tag"># iOS</a>
+            
+              <a href="/tags/KVO/" rel="tag"># KVO</a>
+            
+              <a href="/tags/Crash/" rel="tag"># Crash</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/08/31/get-started/" rel="next" title="使用 hexo + github 搭建个人博客">
+                  <i class="fa fa-chevron-left"></i> 使用 hexo + github 搭建个人博客
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2019/09/02/setup-macbook/" rel="prev" title="Macbook 装机指北">
+                  Macbook 装机指北 <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+    
+    <div class="comments" id="comments"></div>
+  
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前情提要"><span class="nav-number">1.</span> <span class="nav-text">前情提要</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#问题查找"><span class="nav-number">2.</span> <span class="nav-text">问题查找</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#解决"><span class="nav-number">3.</span> <span class="nav-text">解决</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#为何-iOS-11-及以上没有出现问题"><span class="nav-number">4.</span> <span class="nav-text">为何 iOS 11 及以上没有出现问题</span></a></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/avatar.png"
+      alt="xiaolong.jin">
+  <p class="site-author-name" itemprop="name">xiaolong.jin</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/%20%7C%7C%20archive">
+        
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/%20%7C%7C%20th">
+          
+        
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/%20%7C%7C%20tags">
+          
+        
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/xiaolong-jin" title="GitHub &amp;rarr; https:&#x2F;&#x2F;github.com&#x2F;xiaolong-jin" rel="noopener" target="_blank">&lt;i class&#x3D;&quot;fa fa-fw fa-github&quot;&gt;&lt;&#x2F;i&gt;GitHub</a>
+      </span>
+    
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xiaolong.jin</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.4.0</div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+
+
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+<script src="/js/utils.js?v=7.4.0.js"></script>
+
+<script src="/js/motion.js?v=7.4.0.js"></script>
+
+
+<script src="/js/schemes/muse.js?v=7.4.0.js"></script>
+
+
+
+<script src="/js/next-boot.js?v=7.4.0.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.getScript('/js/Valine.min.js', () => {
+  var GUEST = ['nick', 'mail'];
+  var guest = 'nick,mail';
+  guest = guest.split(',').filter(item => {
+    return GUEST.includes(item);
+  });
+
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: false,
+    appId: 'UBpl2ISDelC12yxfw5MjN5jr-gzGzoHsz',
+    appKey: 'S5vHj2gjRWR59TK34BOy9W54',
+    placeholder: '( ゜- ゜)つロ 干杯🍻～',
+    avatar: 'mm',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: true,
+    lang: 'zh-cn' || 'zh-cn',
+    path: location.pathname
+  });
+}, window.Valine);
+</script>
+
+</body>
+</html>

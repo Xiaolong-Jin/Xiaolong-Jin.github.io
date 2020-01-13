@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="工作流程 安装app的时候，系统会读取 Associated Domains Entitlement 中的 domains 从 domains(需支持https) 下载 apple-app-site-association 文件 如果 apple-app-site-association 文件中包含当前 App ID，则开启 Password Autofill 功能">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS 自动密码填充">
+<meta property="og:url" content="http://yoursite.com/2019/11/02/password-autofill/index.html">
+<meta property="og:site_name" content="猫咪不吃小鱼干">
+<meta property="og:description" content="工作流程 安装app的时候，系统会读取 Associated Domains Entitlement 中的 domains 从 domains(需支持https) 下载 apple-app-site-association 文件 如果 apple-app-site-association 文件中包含当前 App ID，则开启 Password Autofill 功能">
+<meta property="og:image" content="http://yoursite.com/2019/11/02/password-autofill/strong-password.png">
+<meta property="og:image" content="http://yoursite.com/2019/11/02/password-autofill/password-autofill.png">
+<meta property="og:image" content="http://yoursite.com/2019/11/02/password-autofill/associated-domains.png">
+<meta property="article:published_time" content="2019-11-02T00:42:30.000Z">
+<meta property="article:modified_time" content="2019-11-08T02:04:28.977Z">
+<meta property="article:author" content="xiaolong.jin">
+<meta property="article:tag" content="iOS">
+<meta property="article:tag" content="password">
+<meta property="article:tag" content="autofill">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/2019/11/02/password-autofill/strong-password.png">
+  <link rel="canonical" href="http://yoursite.com/2019/11/02/password-autofill/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>iOS 自动密码填充 | 猫咪不吃小鱼干</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">猫咪不吃小鱼干</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section">&lt;i class&#x3D;&quot;menu-item-icon fa fa-fw fa-home&quot;&gt;&lt;&#x2F;i&gt; &lt;br&gt;Home</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section">&lt;i class&#x3D;&quot;menu-item-icon fa fa-fw fa-archive&quot;&gt;&lt;&#x2F;i&gt; &lt;br&gt;Archives</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section">&lt;i class&#x3D;&quot;menu-item-icon fa fa-fw fa-th&quot;&gt;&lt;&#x2F;i&gt; &lt;br&gt;Categories</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section">&lt;i class&#x3D;&quot;menu-item-icon fa fa-fw fa-tags&quot;&gt;&lt;&#x2F;i&gt; &lt;br&gt;Tags</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section">&lt;i class&#x3D;&quot;menu-item-icon fa fa-fw fa-users&quot;&gt;&lt;&#x2F;i&gt; &lt;br&gt;About</a>
+
+  </li>
+  </ul>
+
+    
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/02/password-autofill/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xiaolong.jin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="猫咪不吃小鱼干">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">iOS 自动密码填充
+
+          
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2019-11-02 08:42:30" itemprop="dateCreated datePublished" datetime="2019-11-02T08:42:30+08:00">2019-11-02</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2019-11-08 10:04:28" itemprop="dateModified" datetime="2019-11-08T10:04:28+08:00">2019-11-08</time>
+              </span>
+            
+          
+
+          
+            <span id="/2019/11/02/password-autofill/" class="post-meta-item leancloud_visitors" data-flag-title="iOS 自动密码填充" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+        
+      
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2019/11/02/password-autofill/#comments" itemprop="discussionUrl"><span class="post-comments-count valine-comment-count" data-xid="/2019/11/02/password-autofill/" itemprop="commentCount"></span></a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="工作流程"><a href="#工作流程" class="headerlink" title="工作流程"></a>工作流程</h1><ul>
+<li>安装app的时候，系统会读取 Associated Domains Entitlement 中的 domains</li>
+<li>从 domains(需支持https) 下载 apple-app-site-association 文件</li>
+<li>如果 apple-app-site-association 文件中包含当前 App ID，则开启 Password Autofill 功能</li>
+</ul><a id="more"></a>
+<p>本文 Demo 下载：<a href="xxxxx">DMPasswordAutofill</a></p>
+<p>效果展示：强密码(strong password)<br>注册账号的时候自动生成强密码，注册完成以后保存到 iCloud Keychain 中<br><img src="/2019/11/02/password-autofill/strong-password.png" alt="强密码"></p>
+<p>效果展示：自动填充(autofill)<br>登录的时候，如果 Keychain 中已有保存的密码，则会显示在 QuickType Bar 上<br><img src="/2019/11/02/password-autofill/password-autofill.png" alt="自动填充"></p>
+<h1 id="设置关联域名"><a href="#设置关联域名" class="headerlink" title="设置关联域名"></a>设置关联域名</h1><p>使用关联域名，可以让 App 和 Web 共享凭证（Credentials）。<br>要使 App 和 Web 关联，需要在 Web 的根目录下放一个名为 <code>apple-app-site-association</code> 的文件。并在 App 上加一个 Associated Domains Entitlement</p>
+<blockquote>
+<p>除共享 credentials 外，通用链接（universal link）、Handoff 也需要用到 Associated Domains Entitlement。</p>
+</blockquote>
+<h2 id="Associated-Domains"><a href="#Associated-Domains" class="headerlink" title="Associated Domains"></a>Associated Domains</h2><p>在 App 中添加 Associated Domains Entitlement（必须是参加开发者计划的开发者账号才能添加）</p>
+<p><img src="/2019/11/02/password-autofill/associated-domains.png" alt></p>
+<h2 id="apple-app-site-association"><a href="#apple-app-site-association" class="headerlink" title="apple-app-site-association"></a>apple-app-site-association</h2><p>打开 <a href="https://developer.apple.com" target="_blank" rel="noopener">Apple 开发者后台</a> 找到 TeamID，并将下面的内容填写到 Domains 下的 <code>.well-known/apple-app-site-association</code> 文件中。</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"webcredentials"</span> : &#123;</span><br><span class="line">        <span class="attr">"apps"</span> : [<span class="string">"$&#123;TeamID&#125;.$&#123;AppBundleID&#125;"</span>]</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>此处的 <code>${TeamID}</code> 和 <code>${AppBundleID}</code> 请替换成相应的值。<br>该文件可以放在网站根目录下，或者 .well-known 目录下（Apple推荐）。<br>必须使用 https 托管该文件，并且证书未过期，同时不能使用重定向。</p>
+</blockquote>
+<p><strong>关于测试时的服务器，可以选择 github.io。如果是 hexo 等个人博客，需要直接在 github 上创建文件</strong></p>
+<p>发布后，可以通过路径访问一下，确保能够访问到该文件。  </p>
+<h1 id="App-开启-Password-Autofill"><a href="#App-开启-Password-Autofill" class="headerlink" title="App 开启 Password Autofill"></a>App 开启 Password Autofill</h1><p>当用户选择了支持 <code>UITextInputTraits</code> 协议的控件或 HTML 元素的时候，密码自动填充功能会将 QuickType Bar 显示在键盘上方，并根据输入视图类型显示对应的选项。</p>
+<p>本文以 iOS App 开发为例。</p>
+<p>iOS 10.0 中新增的 <code>textContentType</code> 属性指示了文本输入区域期望的文本类型。<br>例如：<code>UITextContentTypeEmailAddress</code> 表示期望输入邮箱地址，系统会自动选择对应类型键盘、改善键盘校正。</p>
+<h2 id="邮箱自动填充"><a href="#邮箱自动填充" class="headerlink" title="邮箱自动填充"></a>邮箱自动填充</h2><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">textField.textContentType = <span class="built_in">UITextContentTypeEmailAddress</span>;</span><br><span class="line">textField.keyboardType = <span class="built_in">UIKeyboardTypeEmailAddress</span>;</span><br></pre></td></tr></table></figure>
+
+<h2 id="强密码推荐"><a href="#强密码推荐" class="headerlink" title="强密码推荐"></a>强密码推荐</h2><p>强密码规则：passwordRules<br>设置了该属性后，系统会按照该规则生成强密码</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">textField.textContentType = <span class="built_in">UITextContentTypeNewPassword</span>;</span><br><span class="line">textField.secureTextEntry = <span class="literal">YES</span>;</span><br><span class="line">textField.passwordRules = [<span class="built_in">UITextInputPasswordRules</span> passwordRulesWithDescriptor:<span class="string">@"allowed: uppper, lower, digit, [-().&amp;@?’#,/&amp;quot;+]; minlength: 8;"</span>];</span><br></pre></td></tr></table></figure>
+
+<p>关于 <code>passwordRules</code> 的编写，可以参考官方的文档：<br><a href="https://developer.apple.com/password-rules/" target="_blank" rel="noopener">https://developer.apple.com/password-rules/</a></p>
+<p>当 用户名框 和 密码框 所在 <code>ViewController</code> 被 pop 或者 dismiss 的时候，Keychain 会自动保存用户名和密码。<br><strong>当注册失败的时候，需要将两个 <code>UITextField</code> 的内容设置为 <code>nil</code>，防止错误的用户名密码被保存起来</strong></p>
+<h2 id="密码自动填充"><a href="#密码自动填充" class="headerlink" title="密码自动填充"></a>密码自动填充</h2><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">textField.textContentType = <span class="built_in">UITextContentTypePassword</span>;</span><br><span class="line">textField.secureTextEntry = <span class="literal">YES</span>;</span><br></pre></td></tr></table></figure>
+
+<p>如果 Keychain 保存了密码的话，会显示在 QuickType Bar 上。</p>
+<h2 id="验证码自动填充"><a href="#验证码自动填充" class="headerlink" title="验证码自动填充"></a>验证码自动填充</h2><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">textField.textContentType = <span class="built_in">UITextContentTypeOneTimeCode</span>;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>常见几种正确短信格式<br>1.验证码是：123456<br>2.验证码：123456<br>3.验证码123456<br>4.验证码为123456  </p>
+</blockquote>
+<p><strong>注意：只有特定格式的验证码才会触发自动填充功能，可以使用 iMessage 给自己发信息验证</strong></p>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/iOS/" rel="tag"># iOS</a>
+            
+              <a href="/tags/password/" rel="tag"># password</a>
+            
+              <a href="/tags/autofill/" rel="tag"># autofill</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/10/05/SS-based-on-AWS-EC2/" rel="next" title="科学上网：基于 AWS EC2 搭建免费的 SS 全过程">
+                  <i class="fa fa-chevron-left"></i> 科学上网：基于 AWS EC2 搭建免费的 SS 全过程
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2019/11/10/adapter-in-android/" rel="prev" title="adapter-in-android">
+                  adapter-in-android <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+    
+    <div class="comments" id="comments"></div>
+  
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#工作流程"><span class="nav-number">1.</span> <span class="nav-text">工作流程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#设置关联域名"><span class="nav-number">2.</span> <span class="nav-text">设置关联域名</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Associated-Domains"><span class="nav-number">2.1.</span> <span class="nav-text">Associated Domains</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#apple-app-site-association"><span class="nav-number">2.2.</span> <span class="nav-text">apple-app-site-association</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#App-开启-Password-Autofill"><span class="nav-number">3.</span> <span class="nav-text">App 开启 Password Autofill</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#邮箱自动填充"><span class="nav-number">3.1.</span> <span class="nav-text">邮箱自动填充</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#强密码推荐"><span class="nav-number">3.2.</span> <span class="nav-text">强密码推荐</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#密码自动填充"><span class="nav-number">3.3.</span> <span class="nav-text">密码自动填充</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#验证码自动填充"><span class="nav-number">3.4.</span> <span class="nav-text">验证码自动填充</span></a></li></ol></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/avatar.png"
+      alt="xiaolong.jin">
+  <p class="site-author-name" itemprop="name">xiaolong.jin</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/%20%7C%7C%20archive">
+        
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/%20%7C%7C%20th">
+          
+        
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/%20%7C%7C%20tags">
+          
+        
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/xiaolong-jin" title="GitHub &amp;rarr; https:&#x2F;&#x2F;github.com&#x2F;xiaolong-jin" rel="noopener" target="_blank">&lt;i class&#x3D;&quot;fa fa-fw fa-github&quot;&gt;&lt;&#x2F;i&gt;GitHub</a>
+      </span>
+    
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xiaolong.jin</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.4.0</div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+
+
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+<script src="/js/utils.js?v=7.4.0.js"></script>
+
+<script src="/js/motion.js?v=7.4.0.js"></script>
+
+
+<script src="/js/schemes/muse.js?v=7.4.0.js"></script>
+
+
+
+<script src="/js/next-boot.js?v=7.4.0.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.getScript('/js/Valine.min.js', () => {
+  var GUEST = ['nick', 'mail'];
+  var guest = 'nick,mail';
+  guest = guest.split(',').filter(item => {
+    return GUEST.includes(item);
+  });
+
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: false,
+    appId: 'UBpl2ISDelC12yxfw5MjN5jr-gzGzoHsz',
+    appKey: 'S5vHj2gjRWR59TK34BOy9W54',
+    placeholder: '( ゜- ゜)つロ 干杯🍻～',
+    avatar: 'mm',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: true,
+    lang: 'zh-cn' || 'zh-cn',
+    path: location.pathname
+  });
+}, window.Valine);
+</script>
+
+</body>
+</html>

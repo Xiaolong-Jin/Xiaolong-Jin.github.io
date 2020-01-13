@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="一个 UIViewController 的 crash 问题，再探 loadView 机制前情提要在工程中，我们定义了一个用于展示报价的 ViewController，取名为 BaoJIaViewController。（注意这个JIa，并非本文笔误）在 BaoJIaViewController 中定义了一个类名为 BaoJiaView 的自定义视图属性该 BaoJiaView 类有个同名的 xib">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[UIViewController -loadView] 中的 Crash">
+<meta property="og:url" content="http://yoursite.com/2019/09/13/UIViewController-loadView/index.html">
+<meta property="og:site_name" content="猫咪不吃小鱼干">
+<meta property="og:description" content="一个 UIViewController 的 crash 问题，再探 loadView 机制前情提要在工程中，我们定义了一个用于展示报价的 ViewController，取名为 BaoJIaViewController。（注意这个JIa，并非本文笔误）在 BaoJIaViewController 中定义了一个类名为 BaoJiaView 的自定义视图属性该 BaoJiaView 类有个同名的 xib">
+<meta property="og:image" content="http://yoursite.com/2019/09/13/UIViewController-loadView/crash_log.png">
+<meta property="article:published_time" content="2019-09-13T01:56:30.000Z">
+<meta property="article:modified_time" content="2019-09-14T05:03:01.821Z">
+<meta property="article:author" content="xiaolong.jin">
+<meta property="article:tag" content="iOS">
+<meta property="article:tag" content="Crash">
+<meta property="article:tag" content="UIViewController">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/2019/09/13/UIViewController-loadView/crash_log.png">
+  <link rel="canonical" href="http://yoursite.com/2019/09/13/UIViewController-loadView/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>[UIViewController -loadView] 中的 Crash | 猫咪不吃小鱼干</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">猫咪不吃小鱼干</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section">&lt;i class&#x3D;&quot;menu-item-icon fa fa-fw fa-home&quot;&gt;&lt;&#x2F;i&gt; &lt;br&gt;Home</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section">&lt;i class&#x3D;&quot;menu-item-icon fa fa-fw fa-archive&quot;&gt;&lt;&#x2F;i&gt; &lt;br&gt;Archives</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section">&lt;i class&#x3D;&quot;menu-item-icon fa fa-fw fa-th&quot;&gt;&lt;&#x2F;i&gt; &lt;br&gt;Categories</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section">&lt;i class&#x3D;&quot;menu-item-icon fa fa-fw fa-tags&quot;&gt;&lt;&#x2F;i&gt; &lt;br&gt;Tags</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section">&lt;i class&#x3D;&quot;menu-item-icon fa fa-fw fa-users&quot;&gt;&lt;&#x2F;i&gt; &lt;br&gt;About</a>
+
+  </li>
+  </ul>
+
+    
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/13/UIViewController-loadView/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xiaolong.jin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="猫咪不吃小鱼干">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">[UIViewController -loadView] 中的 Crash
+
+          
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2019-09-13 09:56:30" itemprop="dateCreated datePublished" datetime="2019-09-13T09:56:30+08:00">2019-09-13</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2019-09-14 13:03:01" itemprop="dateModified" datetime="2019-09-14T13:03:01+08:00">2019-09-14</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a></span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/iOS/Incredible-Crashes/" itemprop="url" rel="index"><span itemprop="name">Incredible Crashes</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <span id="/2019/09/13/UIViewController-loadView/" class="post-meta-item leancloud_visitors" data-flag-title="[UIViewController -loadView] 中的 Crash" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+        
+      
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2019/09/13/UIViewController-loadView/#comments" itemprop="discussionUrl"><span class="post-comments-count valine-comment-count" data-xid="/2019/09/13/UIViewController-loadView/" itemprop="commentCount"></span></a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>一个 UIViewController 的 crash 问题，再探 loadView 机制</p><h1 id="前情提要"><a href="#前情提要" class="headerlink" title="前情提要"></a>前情提要</h1><p>在工程中，我们定义了一个用于展示报价的 ViewController，取名为 <code>BaoJIaViewController</code>。（注意这个JIa，并非本文笔误）</p><p>在 <code>BaoJIaViewController</code> 中定义了一个类名为 <code>BaoJiaView</code> 的自定义视图属性<br>该 <code>BaoJiaView</code> 类有个同名的 xib 文件 <code>BaoJiaView.xib</code></p><a id="more"></a>
+
+
+<p>在 ViewController 中对 <code>BaoJIaViewController</code> 的使用:</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">ViewController</span></span></span><br><span class="line">- (<span class="keyword">void</span>)viewDidLoad &#123;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">  _baoJiaVC = [[BaoJIaViewController alloc] init];</span><br><span class="line">  [<span class="keyword">self</span> addChildViewController:_baoJiaVC];</span><br><span class="line">  [<span class="keyword">self</span>.view addSubview:_baoJiaVC.view];</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
+
+<p>所有的代码跑的明明白白，直到我接收了项目…<br><code>BaoJIaViewController</code> 这个名字怎么可以忍呢？改，现在就改</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">_baoJiaVC = [[BaoJiaViewController alloc] init];</span><br><span class="line">[<span class="keyword">self</span> addChildViewController:_baoJiaVC];</span><br><span class="line">[<span class="keyword">self</span>.view addSubview:_baoJiaVC.view];</span><br></pre></td></tr></table></figure>
+
+<p>于是乎，程序一跑，崩溃难找😭<br>(我用自己电脑运行了一下，居然有堆栈日志。。。公司的破机子上明明没有啊)</p>
+<h1 id="问题查找"><a href="#问题查找" class="headerlink" title="问题查找"></a>问题查找</h1><p>鉴于公司电脑和自己电脑上的不同表现，此处以两条世界线展开</p>
+<h2 id="先以公司机子为例"><a href="#先以公司机子为例" class="headerlink" title="先以公司机子为例"></a>先以公司机子为例</h2><p>公司电脑没有堆栈日志，毫无头绪。但是由于在调用 [BaoJiaViewController viewDidLoad] 方法之前就 Crash 了。我们尝试重写 <code>loadView</code> 方法。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">BaoJiaViewController</span></span></span><br><span class="line">- (<span class="keyword">void</span>)laodView &#123;</span><br><span class="line">  <span class="comment">// 也不知道要写啥，先调用下 super，加个断点看看先</span></span><br><span class="line">  [<span class="keyword">super</span> loadView];</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
+
+<p>然后运行后发现，神奇地运行成功了。。。没有出现 Crash。。。<br>你这个 <code>loadView</code> 到底做了啥？？？</p>
+<h2 id="自己的电脑为例"><a href="#自己的电脑为例" class="headerlink" title="自己的电脑为例"></a>自己的电脑为例</h2><p>自己的电脑上已经打印出来 Crash 时的堆栈，相比而言容易多了</p>
+<p><img src="/2019/09/13/UIViewController-loadView/crash_log.png" alt="crash_log"></p>
+<p>通过日志，我们发现 BaoJiaViewController 通过 _loadViewFromNibNamed:bundle: 方法加载了一个名为 <code>BaoJiaView</code> 的视图。<br>纳尼？你不是叫 BaoJiaViewController 么？还能够自己截去 ‘Controller’ 后缀，去加载前面的同名 View？</p>
+<h1 id="UIViewController-loadView-探索"><a href="#UIViewController-loadView-探索" class="headerlink" title="[UIViewController loadView] 探索"></a>[UIViewController loadView] 探索</h1><p>万事不决，先看文档。</p>
+<p>先看看官方文档中对于 <code>loadView</code> 方法的描述：<br>建议看英文原文，对字母过敏的可以适量食用我的土味翻译。</p>
+<hr>
+<blockquote>
+<p>You should never call this method directly. The view controller calls this method when its view property is requested but is currently nil. This method loads or creates a view and assigns it to the view property.</p>
+</blockquote>
+<p>你不要直接调用该方法。vc 会在它的 view 属性被使用且为 nil 的时候来调用该方法。这个方法会加载或者创建一个视图并复制给 vc 的 view 属性。</p>
+<blockquote>
+<p>If the view controller has an associated nib file, this method loads the view from the nib file. A view controller has an associated nib file if the nibName property returns a non-nil value, which occurs if the view controller was instantiated from a storyboard, if you explicitly assigned it a nib file using the initWithNibName:bundle: method, or if iOS finds a nib file in the app bundle with a name based on the view controller’s class name. If the view controller does not have an associated nib file, this method creates a plain UIView object instead.</p>
+</blockquote>
+<p>如果 vc 关联了一个 nib 文件，这个方法就会通过 nib 文件加载视图。如果 vc 的 nibName 属性返回了一个非空值，那么这个 vc 就有一个关联的 nib 文件。这通常是由于 vc 通过 storyboard 被初始化，或者你通过 initWithNibName:bundle: 方法指明了关联的 nib 文件，或者是因为 iOS 找到了一个基于 vc 类名的 nib 文件。<br>如果 vc 没有关联任何 nib 文件，这个方法会创建一个普通的视图对象。</p>
+<blockquote>
+<p>If you use Interface Builder to create your views and initialize the view controller, you must not override this method.</p>
+</blockquote>
+<p>如果你通过 IB 来创建了你的视图，并初始化了 vc，那么你就不应该重写（override）这个方法。</p>
+<blockquote>
+<p>You can override this method in order to create your views manually. If you choose to do so, assign the root view of your view hierarchy to the view property. The views you create should be unique instances and should not be shared with any other view controller object. Your custom implementation of this method should not call super.</p>
+</blockquote>
+<p>你可以通过重写这个方法来手动创建你的视图，记得把视图赋值给 vc 的 view 属性。该视图不应该共享给别的 vc，你的自定义实现中不应该调用 super。</p>
+<blockquote>
+<p>If you want to perform any additional initialization of your views, do so in the viewDidLoad method.</p>
+</blockquote>
+<p>如果你要做一些额外的视图初始化操作，请在 viewDidLoad 中进行。</p>
+<hr>
+<p>我们发现，<code>loadView</code> 方法并不仅仅只是 <code>self.view = [[UIView alloc] init];</code> 那么简单的实现。它会通过 nibName 属性，来加载相关的 xib 文件。</p>
+<p>通过重写 <code>BaoJiaViewController</code> 的 <code>nibName</code> 的 getter 方法。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">BaoJiaViewController</span></span></span><br><span class="line">- (<span class="built_in">NSString</span> *)nibName &#123;</span><br><span class="line">  <span class="built_in">NSString</span> *ret = [<span class="keyword">super</span> nibName];</span><br><span class="line">  <span class="keyword">return</span> ret; <span class="comment">// ret = @“BaoJiaView”</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
+
+<p>我们可以捕捉到当前的 <code>nibName</code> 属性居然是 <code>@&quot;BaoJiaView&quot;</code></p>
+<h1 id="UIViewController-nibName-探索"><a href="#UIViewController-nibName-探索" class="headerlink" title="[UIViewController nibName] 探索"></a>[UIViewController nibName] 探索</h1><p>万事不决，再看文档。</p>
+<hr>
+<blockquote>
+<p>This property contains the value specified at initialization time to the initWithNibName:bundle: method. The value of this property may be nil.</p>
+</blockquote>
+<p>该属性的值是初始化时 initWithNibName:bundle: 方法指定的值。该属性可能为 nil。</p>
+<blockquote>
+<p>If you use a nib file to store your view controller’s view, it is recommended that you specify that nib file explicitly when initializing your view controller. However, if you do not specify a nib name, and do not override the loadView method in your custom subclass, the view controller searches for a nib file using other means. Specifically, it looks for a nib file with an appropriate name (without the .nib extension) and loads that nib file whenever its view is requested. Specifically, it looks (in order) for a nib file with one of the following names:</p>
+</blockquote>
+<p>如果你使用 nib 文件来存储你的 vc 的视图，推荐你在初始化 vc 的时候指明 nibName。如果你不使用 nib 文件，并且没有在你的自定义 vc 中重写 loadView 方法，vc 就会通过特定方式（顺序地）查找 nib 文件。</p>
+<blockquote>
+<p>If the view controller class name ends with the word ‘Controller’, as in MyViewController, it looks for a nib file whose name matches the class name without the word ‘Controller’, as in MyView.nib.</p>
+</blockquote>
+<p>如果 vc 的类名以 ‘Controller’ 结尾，例如 <code>MyViewController</code>，就会以 <code>MyView</code> 来查找 nib 文件 ‘MyView.nib’。</p>
+<blockquote>
+<p>It looks for a nib file whose name matches the name of the view controller class. For example, if the class name is MyViewController, it looks for a MyViewController.nib file.</p>
+</blockquote>
+<p>通过 vc 的类名直接查找，例如 <code>MyViewController</code>，就会直接查找 ‘MyViewController.xib’ 文件。</p>
+<blockquote>
+<p>Note:<br>Nib names that include a platform-specific identifier such as ~iphone or ~ipad are loaded only on a device of the corresponding type. For example, a nib name of MyViewController~ipad.nib is loaded only on iPad. If your app supports both platform types, you must provide versions of your nib files for each platform.</p>
+</blockquote>
+<p>还可以通过 ~iphone 或者 ~ipad 后缀来指定 nib 文件的平台。例如：’MuViewController~ipad.nib’ 只会在 iPad 平台上被加载。<br>如果你的 app 支持多平台，就可以通过这种方式来进行平台适配。</p>
+<hr>
+<p>从中可以看出，如果不指定 nib 文件，且子类没有重写 loadView 方法，则会一次查找 MyView.xib 和 MyViewController.xib 来加载 vc 的视图。</p>
+<p>怪不得如果我们重写了 <code>loadView</code> 方法，在内部调用 <code>[super loadView]</code>，程序就不会 crash 了。</p>
+<p>知道原因，就好改了。直接把 <code>BaoJiaViewController</code> refactor-&gt;rename 成 <code>BaoJiaVC</code>，搞定😄</p>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/iOS/" rel="tag"># iOS</a>
+            
+              <a href="/tags/Crash/" rel="tag"># Crash</a>
+            
+              <a href="/tags/UIViewController/" rel="tag"># UIViewController</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/09/02/setup-macbook/" rel="next" title="Macbook 装机指北">
+                  <i class="fa fa-chevron-left"></i> Macbook 装机指北
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2019/10/04/UIDynamicProviderColor/" rel="prev" title="UIDynamicProviderColor">
+                  UIDynamicProviderColor <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+    
+    <div class="comments" id="comments"></div>
+  
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前情提要"><span class="nav-number">1.</span> <span class="nav-text">前情提要</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#问题查找"><span class="nav-number">2.</span> <span class="nav-text">问题查找</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#先以公司机子为例"><span class="nav-number">2.1.</span> <span class="nav-text">先以公司机子为例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自己的电脑为例"><span class="nav-number">2.2.</span> <span class="nav-text">自己的电脑为例</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#UIViewController-loadView-探索"><span class="nav-number">3.</span> <span class="nav-text">[UIViewController loadView] 探索</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#UIViewController-nibName-探索"><span class="nav-number">4.</span> <span class="nav-text">[UIViewController nibName] 探索</span></a></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/avatar.png"
+      alt="xiaolong.jin">
+  <p class="site-author-name" itemprop="name">xiaolong.jin</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/%20%7C%7C%20archive">
+        
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/%20%7C%7C%20th">
+          
+        
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/%20%7C%7C%20tags">
+          
+        
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/xiaolong-jin" title="GitHub &amp;rarr; https:&#x2F;&#x2F;github.com&#x2F;xiaolong-jin" rel="noopener" target="_blank">&lt;i class&#x3D;&quot;fa fa-fw fa-github&quot;&gt;&lt;&#x2F;i&gt;GitHub</a>
+      </span>
+    
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xiaolong.jin</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.4.0</div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+
+
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+<script src="/js/utils.js?v=7.4.0.js"></script>
+
+<script src="/js/motion.js?v=7.4.0.js"></script>
+
+
+<script src="/js/schemes/muse.js?v=7.4.0.js"></script>
+
+
+
+<script src="/js/next-boot.js?v=7.4.0.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.getScript('/js/Valine.min.js', () => {
+  var GUEST = ['nick', 'mail'];
+  var guest = 'nick,mail';
+  guest = guest.split(',').filter(item => {
+    return GUEST.includes(item);
+  });
+
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: false,
+    appId: 'UBpl2ISDelC12yxfw5MjN5jr-gzGzoHsz',
+    appKey: 'S5vHj2gjRWR59TK34BOy9W54',
+    placeholder: '( ゜- ゜)つロ 干杯🍻～',
+    avatar: 'mm',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: true,
+    lang: 'zh-cn' || 'zh-cn',
+    path: location.pathname
+  });
+}, window.Valine);
+</script>
+
+</body>
+</html>

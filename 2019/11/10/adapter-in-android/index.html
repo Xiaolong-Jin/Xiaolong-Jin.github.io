@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="一个 iOS 开发者的 Android 学习之路。https:&#x2F;&#x2F;www.cnblogs.com&#x2F;huolan&#x2F;p&#x2F;5126794.htmlAdapter（适配器）类似 iOS 中的 DataSource，是数据和视图的中间桥梁，帮助数据如何显示到视图上。Adapter 有很多接口、抽象类、子类，这里介绍一下常用的几个:BaseAdapter、ArrayAdapter、SimpleAdapter。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="adapter-in-android">
+<meta property="og:url" content="http://yoursite.com/2019/11/10/adapter-in-android/index.html">
+<meta property="og:site_name" content="猫咪不吃小鱼干">
+<meta property="og:description" content="一个 iOS 开发者的 Android 学习之路。https:&#x2F;&#x2F;www.cnblogs.com&#x2F;huolan&#x2F;p&#x2F;5126794.htmlAdapter（适配器）类似 iOS 中的 DataSource，是数据和视图的中间桥梁，帮助数据如何显示到视图上。Adapter 有很多接口、抽象类、子类，这里介绍一下常用的几个:BaseAdapter、ArrayAdapter、SimpleAdapter。">
+<meta property="article:published_time" content="2019-11-10T01:36:04.000Z">
+<meta property="article:modified_time" content="2019-11-10T09:06:53.983Z">
+<meta property="article:author" content="xiaolong.jin">
+<meta property="article:tag" content="Adapter">
+<meta property="article:tag" content="Android">
+<meta name="twitter:card" content="summary">
+  <link rel="canonical" href="http://yoursite.com/2019/11/10/adapter-in-android/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>adapter-in-android | 猫咪不吃小鱼干</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">猫咪不吃小鱼干</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section">&lt;i class&#x3D;&quot;menu-item-icon fa fa-fw fa-home&quot;&gt;&lt;&#x2F;i&gt; &lt;br&gt;Home</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section">&lt;i class&#x3D;&quot;menu-item-icon fa fa-fw fa-archive&quot;&gt;&lt;&#x2F;i&gt; &lt;br&gt;Archives</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section">&lt;i class&#x3D;&quot;menu-item-icon fa fa-fw fa-th&quot;&gt;&lt;&#x2F;i&gt; &lt;br&gt;Categories</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section">&lt;i class&#x3D;&quot;menu-item-icon fa fa-fw fa-tags&quot;&gt;&lt;&#x2F;i&gt; &lt;br&gt;Tags</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section">&lt;i class&#x3D;&quot;menu-item-icon fa fa-fw fa-users&quot;&gt;&lt;&#x2F;i&gt; &lt;br&gt;About</a>
+
+  </li>
+  </ul>
+
+    
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/10/adapter-in-android/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xiaolong.jin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="猫咪不吃小鱼干">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">adapter-in-android
+
+          
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2019-11-10 09:36:04 / Modified: 17:06:53" itemprop="dateCreated datePublished" datetime="2019-11-10T09:36:04+08:00">2019-11-10</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Android/" itemprop="url" rel="index"><span itemprop="name">Android</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <span id="/2019/11/10/adapter-in-android/" class="post-meta-item leancloud_visitors" data-flag-title="adapter-in-android" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+        
+      
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2019/11/10/adapter-in-android/#comments" itemprop="discussionUrl"><span class="post-comments-count valine-comment-count" data-xid="/2019/11/10/adapter-in-android/" itemprop="commentCount"></span></a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>一个 iOS 开发者的 Android 学习之路。<br><a href="https://www.cnblogs.com/huolan/p/5126794.html" target="_blank" rel="noopener">https://www.cnblogs.com/huolan/p/5126794.html</a></p><h1 id="Adapter（适配器）"><a href="#Adapter（适配器）" class="headerlink" title="Adapter（适配器）"></a>Adapter（适配器）</h1><p>类似 iOS 中的 DataSource，是数据和视图的中间桥梁，帮助数据如何显示到视图上。<br>Adapter 有很多接口、抽象类、子类，这里介绍一下常用的几个:<code>BaseAdapter</code>、<code>ArrayAdapter</code>、<code>SimpleAdapter</code>。</p><a id="more"></a>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Adapter</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Register an observer that is called when changes happen to the data used by this adapter.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> observer the object that gets notified when the data set changes.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">registerDataSetObserver</span><span class="params">(DataSetObserver observer)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Unregister an observer that has previously been registered with this</span></span><br><span class="line"><span class="comment">     * adapter via &#123;<span class="doctag">@link</span> #registerDataSetObserver&#125;.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> observer the object to unregister.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">unregisterDataSetObserver</span><span class="params">(DataSetObserver observer)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * How many items are in the data set represented by this Adapter.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> Count of items.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">getCount</span><span class="params">()</span></span>;   </span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Get the data item associated with the specified position in the data set.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> position Position of the item whose data we want within the adapter's</span></span><br><span class="line"><span class="comment">     * data set.</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> The data at the specified position.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function">Object <span class="title">getItem</span><span class="params">(<span class="keyword">int</span> position)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Get the row id associated with the specified position in the list.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> position The position of the item within the adapter's data set whose row id we want.</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> The id of the item at the specified position.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">long</span> <span class="title">getItemId</span><span class="params">(<span class="keyword">int</span> position)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Indicates whether the item ids are stable across changes to the</span></span><br><span class="line"><span class="comment">     * underlying data.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> True if the same id always refers to the same object.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">hasStableIds</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Get a View that displays the data at the specified position in the data set. You can either</span></span><br><span class="line"><span class="comment">     * create a View manually or inflate it from an XML layout file. When the View is inflated, the</span></span><br><span class="line"><span class="comment">     * parent View (GridView, ListView...) will apply default layout parameters unless you use</span></span><br><span class="line"><span class="comment">     * &#123;<span class="doctag">@link</span> android.view.LayoutInflater#inflate(int, android.view.ViewGroup, boolean)&#125;</span></span><br><span class="line"><span class="comment">     * to specify a root view and to prevent attachment to the root.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> position The position of the item within the adapter's data set of the item whose view</span></span><br><span class="line"><span class="comment">     *        we want.</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> convertView The old view to reuse, if possible. Note: You should check that this view</span></span><br><span class="line"><span class="comment">     *        is non-null and of an appropriate type before using. If it is not possible to convert</span></span><br><span class="line"><span class="comment">     *        this view to display the correct data, this method can create a new view.</span></span><br><span class="line"><span class="comment">     *        Heterogeneous lists can specify their number of view types, so that this View is</span></span><br><span class="line"><span class="comment">     *        always of the right type (see &#123;<span class="doctag">@link</span> #getViewTypeCount()&#125; and</span></span><br><span class="line"><span class="comment">     *        &#123;<span class="doctag">@link</span> #getItemViewType(int)&#125;).</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> parent The parent that this view will eventually be attached to</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> A View corresponding to the data at the specified position.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function">View <span class="title">getView</span><span class="params">(<span class="keyword">int</span> position, View convertView, ViewGroup parent)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * An item view type that causes the &#123;<span class="doctag">@link</span> AdapterView&#125; to ignore the item</span></span><br><span class="line"><span class="comment">     * view. For example, this can be used if the client does not want a</span></span><br><span class="line"><span class="comment">     * particular view to be given for conversion in</span></span><br><span class="line"><span class="comment">     * &#123;<span class="doctag">@link</span> #getView(int, View, ViewGroup)&#125;.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@see</span> #getItemViewType(int)</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@see</span> #getViewTypeCount()</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> IGNORE_ITEM_VIEW_TYPE = AdapterView.ITEM_VIEW_TYPE_IGNORE;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Get the type of View that will be created by &#123;<span class="doctag">@link</span> #getView&#125; for the specified item.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> position The position of the item within the adapter's data set whose view type we</span></span><br><span class="line"><span class="comment">     *        want.</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> An integer representing the type of View. Two views should share the same type if one</span></span><br><span class="line"><span class="comment">     *         can be converted to the other in &#123;<span class="doctag">@link</span> #getView&#125;. Note: Integers must be in the</span></span><br><span class="line"><span class="comment">     *         range 0 to &#123;<span class="doctag">@link</span> #getViewTypeCount&#125; - 1. &#123;<span class="doctag">@link</span> #IGNORE_ITEM_VIEW_TYPE&#125; can</span></span><br><span class="line"><span class="comment">     *         also be returned.</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@see</span> #IGNORE_ITEM_VIEW_TYPE</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">getItemViewType</span><span class="params">(<span class="keyword">int</span> position)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * &lt;p&gt;</span></span><br><span class="line"><span class="comment">     * Returns the number of types of Views that will be created by</span></span><br><span class="line"><span class="comment">     * &#123;<span class="doctag">@link</span> #getView&#125;. Each type represents a set of views that can be</span></span><br><span class="line"><span class="comment">     * converted in &#123;<span class="doctag">@link</span> #getView&#125;. If the adapter always returns the same</span></span><br><span class="line"><span class="comment">     * type of View for all items, this method should return 1.</span></span><br><span class="line"><span class="comment">     * &lt;/p&gt;</span></span><br><span class="line"><span class="comment">     * &lt;p&gt;</span></span><br><span class="line"><span class="comment">     * This method will only be called when the adapter is set on the &#123;<span class="doctag">@link</span> AdapterView&#125;.</span></span><br><span class="line"><span class="comment">     * &lt;/p&gt;</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> The number of types of Views that will be created by this adapter</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">getViewTypeCount</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> NO_SELECTION = Integer.MIN_VALUE;</span><br><span class="line"></span><br><span class="line">     <span class="comment">/**</span></span><br><span class="line"><span class="comment">      * <span class="doctag">@return</span> true if this adapter doesn't contain any data.  This is used to determine</span></span><br><span class="line"><span class="comment">      * whether the empty view should be displayed.  A typical implementation will return</span></span><br><span class="line"><span class="comment">      * getCount() == 0 but since getCount() includes the headers and footers, specialized</span></span><br><span class="line"><span class="comment">      * adapters might want a different behavior.</span></span><br><span class="line"><span class="comment">      */</span></span><br><span class="line">     <span class="function"><span class="keyword">boolean</span> <span class="title">isEmpty</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Gets a string representation of the adapter data that can help</span></span><br><span class="line"><span class="comment">     * &#123;<span class="doctag">@link</span> android.service.autofill.AutofillService&#125; autofill the view backed by the adapter.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * &lt;p&gt;</span></span><br><span class="line"><span class="comment">     * It should only be set (i.e., non-&#123;<span class="doctag">@code</span> null&#125; if the values do not represent PII</span></span><br><span class="line"><span class="comment">     * (Personally Identifiable Information - sensitive data such as email addresses,</span></span><br><span class="line"><span class="comment">     * credit card numbers, passwords, etc...). For</span></span><br><span class="line"><span class="comment">     * example, it's ok to return a list of month names, but not a list of usernames. A good rule of</span></span><br><span class="line"><span class="comment">     * thumb is that if the adapter data comes from static resources, such data is not PII - see</span></span><br><span class="line"><span class="comment">     * &#123;<span class="doctag">@link</span> android.view.ViewStructure#setDataIsSensitive(boolean)&#125; for more info.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> &#123;<span class="doctag">@code</span> null&#125; by default, unless implementations override it.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">default</span> <span class="meta">@Nullable</span> CharSequence[] getAutofillOptions() &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="ArrayAdapter-数组适配器"><a href="#ArrayAdapter-数组适配器" class="headerlink" title="ArrayAdapter 数组适配器"></a>ArrayAdapter 数组适配器</h2><p>这个适配器有一定的局限性，只能显示一行文本。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ArrayAdapter</span> &lt;<span class="title">T</span>&gt; <span class="keyword">extends</span> <span class="title">android</span>.<span class="title">widget</span>.<span class="title">BaseAdapter</span> <span class="keyword">implements</span> <span class="title">android</span>.<span class="title">widget</span>.<span class="title">Filterable</span>, <span class="title">android</span>.<span class="title">widget</span>.<span class="title">ThemedSpinnerAdapter</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ArrayAdapter</span><span class="params">(@android.annotation.NonNull android.content.Context context, <span class="keyword">int</span> resource)</span> </span>&#123; <span class="comment">/* compiled code */</span> &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ArrayAdapter</span><span class="params">(@android.annotation.NonNull android.content.Context context, <span class="keyword">int</span> resource, <span class="keyword">int</span> textViewResourceId)</span> </span>&#123; <span class="comment">/* compiled code */</span> &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ArrayAdapter</span><span class="params">(@android.annotation.NonNull android.content.Context context, <span class="keyword">int</span> resource, @android.annotation.NonNull T[] objects)</span> </span>&#123; <span class="comment">/* compiled code */</span> &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ArrayAdapter</span><span class="params">(@android.annotation.NonNull android.content.Context context, <span class="keyword">int</span> resource, <span class="keyword">int</span> textViewResourceId, @android.annotation.NonNull T[] objects)</span> </span>&#123; <span class="comment">/* compiled code */</span> &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ArrayAdapter</span><span class="params">(@android.annotation.NonNull android.content.Context context, <span class="keyword">int</span> resource, @android.annotation.NonNull java.util.List&lt;T&gt; objects)</span> </span>&#123; <span class="comment">/* compiled code */</span> &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ArrayAdapter</span><span class="params">(@android.annotation.NonNull android.content.Context context, <span class="keyword">int</span> resource, <span class="keyword">int</span> textViewResourceId, @android.annotation.NonNull java.util.List&lt;T&gt; objects)</span> </span>&#123; <span class="comment">/* compiled code */</span> &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">add</span><span class="params">(@android.annotation.Nullable T object)</span> </span>&#123; <span class="comment">/* compiled code */</span> &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addAll</span><span class="params">(@android.annotation.NonNull java.util.Collection&lt;? extends T&gt; collection)</span> </span>&#123; <span class="comment">/* compiled code */</span> &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addAll</span><span class="params">(T... items)</span> </span>&#123; <span class="comment">/* compiled code */</span> &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">insert</span><span class="params">(@android.annotation.Nullable T object, <span class="keyword">int</span> index)</span> </span>&#123; <span class="comment">/* compiled code */</span> &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">remove</span><span class="params">(@android.annotation.Nullable T object)</span> </span>&#123; <span class="comment">/* compiled code */</span> &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">clear</span><span class="params">()</span> </span>&#123; <span class="comment">/* compiled code */</span> &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sort</span><span class="params">(@android.annotation.NonNull java.util.Comparator&lt;? <span class="keyword">super</span> T&gt; comparator)</span> </span>&#123; <span class="comment">/* compiled code */</span> &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">notifyDataSetChanged</span><span class="params">()</span> </span>&#123; <span class="comment">/* compiled code */</span> &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setNotifyOnChange</span><span class="params">(<span class="keyword">boolean</span> notifyOnChange)</span> </span>&#123; <span class="comment">/* compiled code */</span> &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@android</span>.annotation.NonNull</span><br><span class="line">    <span class="keyword">public</span> android.content.<span class="function">Context <span class="title">getContext</span><span class="params">()</span> </span>&#123; <span class="comment">/* compiled code */</span> &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getCount</span><span class="params">()</span> </span>&#123; <span class="comment">/* compiled code */</span> &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@android</span>.annotation.Nullable</span><br><span class="line">    <span class="function"><span class="keyword">public</span> T <span class="title">getItem</span><span class="params">(<span class="keyword">int</span> position)</span> </span>&#123; <span class="comment">/* compiled code */</span> &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getPosition</span><span class="params">(@android.annotation.Nullable T item)</span> </span>&#123; <span class="comment">/* compiled code */</span> &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">long</span> <span class="title">getItemId</span><span class="params">(<span class="keyword">int</span> position)</span> </span>&#123; <span class="comment">/* compiled code */</span> &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@android</span>.annotation.NonNull</span><br><span class="line">    <span class="keyword">public</span> android.view.<span class="function">View <span class="title">getView</span><span class="params">(<span class="keyword">int</span> position, @android.annotation.Nullable android.view.View convertView, @android.annotation.NonNull android.view.ViewGroup parent)</span> </span>&#123; <span class="comment">/* compiled code */</span> &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setDropDownViewResource</span><span class="params">(<span class="keyword">int</span> resource)</span> </span>&#123; <span class="comment">/* compiled code */</span> &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setDropDownViewTheme</span><span class="params">(@android.annotation.Nullable android.content.res.Resources.Theme theme)</span> </span>&#123; <span class="comment">/* compiled code */</span> &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@android</span>.annotation.Nullable</span><br><span class="line">    <span class="keyword">public</span> android.content.res.Resources.<span class="function">Theme <span class="title">getDropDownViewTheme</span><span class="params">()</span> </span>&#123; <span class="comment">/* compiled code */</span> &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> android.view.<span class="function">View <span class="title">getDropDownView</span><span class="params">(<span class="keyword">int</span> position, @androidx.annotation.RecentlyNullable android.view.View convertView, @androidx.annotation.RecentlyNonNull android.view.ViewGroup parent)</span> </span>&#123; <span class="comment">/* compiled code */</span> &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@android</span>.annotation.NonNull</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> android.widget.ArrayAdapter&lt;java.lang.CharSequence&gt; createFromResource(<span class="meta">@android</span>.annotation.NonNull android.content.Context context, <span class="keyword">int</span> textArrayResId, <span class="keyword">int</span> textViewResId) &#123; <span class="comment">/* compiled code */</span> &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@android</span>.annotation.NonNull</span><br><span class="line">    <span class="keyword">public</span> android.widget.<span class="function">Filter <span class="title">getFilter</span><span class="params">()</span> </span>&#123; <span class="comment">/* compiled code */</span> &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> java.lang.CharSequence[] getAutofillOptions() &#123; <span class="comment">/* compiled code */</span> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/Adapter/" rel="tag"># Adapter</a>
+            
+              <a href="/tags/Android/" rel="tag"># Android</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/11/02/password-autofill/" rel="next" title="iOS 自动密码填充">
+                  <i class="fa fa-chevron-left"></i> iOS 自动密码填充
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2019/12/14/meet-swift/" rel="prev" title="meet swift">
+                  meet swift <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+    
+    <div class="comments" id="comments"></div>
+  
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Adapter（适配器）"><span class="nav-number">1.</span> <span class="nav-text">Adapter（适配器）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ArrayAdapter-数组适配器"><span class="nav-number">1.1.</span> <span class="nav-text">ArrayAdapter 数组适配器</span></a></li></ol></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/avatar.png"
+      alt="xiaolong.jin">
+  <p class="site-author-name" itemprop="name">xiaolong.jin</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/%20%7C%7C%20archive">
+        
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/%20%7C%7C%20th">
+          
+        
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/%20%7C%7C%20tags">
+          
+        
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/xiaolong-jin" title="GitHub &amp;rarr; https:&#x2F;&#x2F;github.com&#x2F;xiaolong-jin" rel="noopener" target="_blank">&lt;i class&#x3D;&quot;fa fa-fw fa-github&quot;&gt;&lt;&#x2F;i&gt;GitHub</a>
+      </span>
+    
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xiaolong.jin</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.4.0</div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+
+
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+<script src="/js/utils.js?v=7.4.0.js"></script>
+
+<script src="/js/motion.js?v=7.4.0.js"></script>
+
+
+<script src="/js/schemes/muse.js?v=7.4.0.js"></script>
+
+
+
+<script src="/js/next-boot.js?v=7.4.0.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.getScript('/js/Valine.min.js', () => {
+  var GUEST = ['nick', 'mail'];
+  var guest = 'nick,mail';
+  guest = guest.split(',').filter(item => {
+    return GUEST.includes(item);
+  });
+
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: false,
+    appId: 'UBpl2ISDelC12yxfw5MjN5jr-gzGzoHsz',
+    appKey: 'S5vHj2gjRWR59TK34BOy9W54',
+    placeholder: '( ゜- ゜)つロ 干杯🍻～',
+    avatar: 'mm',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: true,
+    lang: 'zh-cn' || 'zh-cn',
+    path: location.pathname
+  });
+}, window.Valine);
+</script>
+
+</body>
+</html>
