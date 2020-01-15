@@ -9,7 +9,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 3.9.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.0">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.0">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.0">
@@ -55,18 +55,18 @@
   };
 </script>
 
-  <meta name="description" content="一个 iOS 开发者的 Android 学习之路。https:&#x2F;&#x2F;www.cnblogs.com&#x2F;huolan&#x2F;p&#x2F;5126794.htmlAdapter（适配器）类似 iOS 中的 DataSource，是数据和视图的中间桥梁，帮助数据如何显示到视图上。Adapter 有很多接口、抽象类、子类，这里介绍一下常用的几个:BaseAdapter、ArrayAdapter、SimpleAdapter。">
+  <meta name="description" content="一个 iOS 开发者的 Android 学习之路。https://www.cnblogs.com/huolan/p/5126794.htmlAdapter（适配器）类似 iOS 中的 DataSource，是数据和视图的中间桥梁，帮助数据如何显示到视图上。Adapter 有很多接口、抽象类、子类，这里介绍一下常用的几个:BaseAdapter、ArrayAdapter、SimpleAdapter。">
+<meta name="keywords" content="Adapter,Android">
 <meta property="og:type" content="article">
 <meta property="og:title" content="adapter-in-android">
 <meta property="og:url" content="http://yoursite.com/2019/11/10/adapter-in-android/index.html">
 <meta property="og:site_name" content="猫咪不吃小鱼干">
-<meta property="og:description" content="一个 iOS 开发者的 Android 学习之路。https:&#x2F;&#x2F;www.cnblogs.com&#x2F;huolan&#x2F;p&#x2F;5126794.htmlAdapter（适配器）类似 iOS 中的 DataSource，是数据和视图的中间桥梁，帮助数据如何显示到视图上。Adapter 有很多接口、抽象类、子类，这里介绍一下常用的几个:BaseAdapter、ArrayAdapter、SimpleAdapter。">
-<meta property="article:published_time" content="2019-11-10T01:36:04.000Z">
-<meta property="article:modified_time" content="2019-11-10T09:06:53.983Z">
-<meta property="article:author" content="xiaolong.jin">
-<meta property="article:tag" content="Adapter">
-<meta property="article:tag" content="Android">
+<meta property="og:description" content="一个 iOS 开发者的 Android 学习之路。https://www.cnblogs.com/huolan/p/5126794.htmlAdapter（适配器）类似 iOS 中的 DataSource，是数据和视图的中间桥梁，帮助数据如何显示到视图上。Adapter 有很多接口、抽象类、子类，这里介绍一下常用的几个:BaseAdapter、ArrayAdapter、SimpleAdapter。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-11-10T09:06:53.983Z">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="adapter-in-android">
+<meta name="twitter:description" content="一个 iOS 开发者的 Android 学习之路。https://www.cnblogs.com/huolan/p/5126794.htmlAdapter（适配器）类似 iOS 中的 DataSource，是数据和视图的中间桥梁，帮助数据如何显示到视图上。Adapter 有很多接口、抽象类、子类，这里介绍一下常用的几个:BaseAdapter、ArrayAdapter、SimpleAdapter。">
   <link rel="canonical" href="http://yoursite.com/2019/11/10/adapter-in-android/">
 
 
@@ -155,7 +155,7 @@
       
     
 
-    <a href="/" rel="section">&lt;i class&#x3D;&quot;menu-item-icon fa fa-fw fa-home&quot;&gt;&lt;&#x2F;i&gt; &lt;br&gt;Home</a>
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
 
   </li>
       
@@ -166,7 +166,7 @@
       
     
 
-    <a href="/archives/" rel="section">&lt;i class&#x3D;&quot;menu-item-icon fa fa-fw fa-archive&quot;&gt;&lt;&#x2F;i&gt; &lt;br&gt;Archives</a>
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
 
   </li>
       
@@ -177,7 +177,7 @@
       
     
 
-    <a href="/categories/" rel="section">&lt;i class&#x3D;&quot;menu-item-icon fa fa-fw fa-th&quot;&gt;&lt;&#x2F;i&gt; &lt;br&gt;Categories</a>
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories</a>
 
   </li>
       
@@ -188,7 +188,7 @@
       
     
 
-    <a href="/tags/" rel="section">&lt;i class&#x3D;&quot;menu-item-icon fa fa-fw fa-tags&quot;&gt;&lt;&#x2F;i&gt; &lt;br&gt;Tags</a>
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
 
   </li>
       
@@ -199,7 +199,7 @@
       
     
 
-    <a href="/about/" rel="section">&lt;i class&#x3D;&quot;menu-item-icon fa fa-fw fa-users&quot;&gt;&lt;&#x2F;i&gt; &lt;br&gt;About</a>
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-users"></i> <br>About</a>
 
   </li>
   </ul>
@@ -318,6 +318,7 @@
 <h2 id="ArrayAdapter-数组适配器"><a href="#ArrayAdapter-数组适配器" class="headerlink" title="ArrayAdapter 数组适配器"></a>ArrayAdapter 数组适配器</h2><p>这个适配器有一定的局限性，只能显示一行文本。</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ArrayAdapter</span> &lt;<span class="title">T</span>&gt; <span class="keyword">extends</span> <span class="title">android</span>.<span class="title">widget</span>.<span class="title">BaseAdapter</span> <span class="keyword">implements</span> <span class="title">android</span>.<span class="title">widget</span>.<span class="title">Filterable</span>, <span class="title">android</span>.<span class="title">widget</span>.<span class="title">ThemedSpinnerAdapter</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ArrayAdapter</span><span class="params">(@android.annotation.NonNull android.content.Context context, <span class="keyword">int</span> resource)</span> </span>&#123; <span class="comment">/* compiled code */</span> &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ArrayAdapter</span><span class="params">(@android.annotation.NonNull android.content.Context context, <span class="keyword">int</span> resource, <span class="keyword">int</span> textViewResourceId)</span> </span>&#123; <span class="comment">/* compiled code */</span> &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ArrayAdapter</span><span class="params">(@android.annotation.NonNull android.content.Context context, <span class="keyword">int</span> resource, @android.annotation.NonNull T[] objects)</span> </span>&#123; <span class="comment">/* compiled code */</span> &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ArrayAdapter</span><span class="params">(@android.annotation.NonNull android.content.Context context, <span class="keyword">int</span> resource, <span class="keyword">int</span> textViewResourceId, @android.annotation.NonNull T[] objects)</span> </span>&#123; <span class="comment">/* compiled code */</span> &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ArrayAdapter</span><span class="params">(@android.annotation.NonNull android.content.Context context, <span class="keyword">int</span> resource, @android.annotation.NonNull java.util.List&lt;T&gt; objects)</span> </span>&#123; <span class="comment">/* compiled code */</span> &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ArrayAdapter</span><span class="params">(@android.annotation.NonNull android.content.Context context, <span class="keyword">int</span> resource, <span class="keyword">int</span> textViewResourceId, @android.annotation.NonNull java.util.List&lt;T&gt; objects)</span> </span>&#123; <span class="comment">/* compiled code */</span> &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">add</span><span class="params">(@android.annotation.Nullable T object)</span> </span>&#123; <span class="comment">/* compiled code */</span> &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addAll</span><span class="params">(@android.annotation.NonNull java.util.Collection&lt;? extends T&gt; collection)</span> </span>&#123; <span class="comment">/* compiled code */</span> &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addAll</span><span class="params">(T... items)</span> </span>&#123; <span class="comment">/* compiled code */</span> &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">insert</span><span class="params">(@android.annotation.Nullable T object, <span class="keyword">int</span> index)</span> </span>&#123; <span class="comment">/* compiled code */</span> &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">remove</span><span class="params">(@android.annotation.Nullable T object)</span> </span>&#123; <span class="comment">/* compiled code */</span> &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">clear</span><span class="params">()</span> </span>&#123; <span class="comment">/* compiled code */</span> &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sort</span><span class="params">(@android.annotation.NonNull java.util.Comparator&lt;? <span class="keyword">super</span> T&gt; comparator)</span> </span>&#123; <span class="comment">/* compiled code */</span> &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">notifyDataSetChanged</span><span class="params">()</span> </span>&#123; <span class="comment">/* compiled code */</span> &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setNotifyOnChange</span><span class="params">(<span class="keyword">boolean</span> notifyOnChange)</span> </span>&#123; <span class="comment">/* compiled code */</span> &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@android</span>.annotation.NonNull</span><br><span class="line">    <span class="keyword">public</span> android.content.<span class="function">Context <span class="title">getContext</span><span class="params">()</span> </span>&#123; <span class="comment">/* compiled code */</span> &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getCount</span><span class="params">()</span> </span>&#123; <span class="comment">/* compiled code */</span> &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@android</span>.annotation.Nullable</span><br><span class="line">    <span class="function"><span class="keyword">public</span> T <span class="title">getItem</span><span class="params">(<span class="keyword">int</span> position)</span> </span>&#123; <span class="comment">/* compiled code */</span> &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getPosition</span><span class="params">(@android.annotation.Nullable T item)</span> </span>&#123; <span class="comment">/* compiled code */</span> &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">long</span> <span class="title">getItemId</span><span class="params">(<span class="keyword">int</span> position)</span> </span>&#123; <span class="comment">/* compiled code */</span> &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@android</span>.annotation.NonNull</span><br><span class="line">    <span class="keyword">public</span> android.view.<span class="function">View <span class="title">getView</span><span class="params">(<span class="keyword">int</span> position, @android.annotation.Nullable android.view.View convertView, @android.annotation.NonNull android.view.ViewGroup parent)</span> </span>&#123; <span class="comment">/* compiled code */</span> &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setDropDownViewResource</span><span class="params">(<span class="keyword">int</span> resource)</span> </span>&#123; <span class="comment">/* compiled code */</span> &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setDropDownViewTheme</span><span class="params">(@android.annotation.Nullable android.content.res.Resources.Theme theme)</span> </span>&#123; <span class="comment">/* compiled code */</span> &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@android</span>.annotation.Nullable</span><br><span class="line">    <span class="keyword">public</span> android.content.res.Resources.<span class="function">Theme <span class="title">getDropDownViewTheme</span><span class="params">()</span> </span>&#123; <span class="comment">/* compiled code */</span> &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> android.view.<span class="function">View <span class="title">getDropDownView</span><span class="params">(<span class="keyword">int</span> position, @androidx.annotation.RecentlyNullable android.view.View convertView, @androidx.annotation.RecentlyNonNull android.view.ViewGroup parent)</span> </span>&#123; <span class="comment">/* compiled code */</span> &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@android</span>.annotation.NonNull</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> android.widget.ArrayAdapter&lt;java.lang.CharSequence&gt; createFromResource(<span class="meta">@android</span>.annotation.NonNull android.content.Context context, <span class="keyword">int</span> textArrayResId, <span class="keyword">int</span> textViewResId) &#123; <span class="comment">/* compiled code */</span> &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@android</span>.annotation.NonNull</span><br><span class="line">    <span class="keyword">public</span> android.widget.<span class="function">Filter <span class="title">getFilter</span><span class="params">()</span> </span>&#123; <span class="comment">/* compiled code */</span> &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> java.lang.CharSequence[] getAutofillOptions() &#123; <span class="comment">/* compiled code */</span> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
+
     </div>
 
     
@@ -424,7 +425,7 @@
   <nav class="site-state motion-element">
       <div class="site-state-item site-state-posts">
         
-          <a href="/archives/%20%7C%7C%20archive">
+          <a href="/archives/">
         
           <span class="site-state-item-count">9</span>
           <span class="site-state-item-name">posts</span>
@@ -436,7 +437,7 @@
       <div class="site-state-item site-state-categories">
         
           
-            <a href="/categories/%20%7C%7C%20th">
+            <a href="/categories/">
           
         
         <span class="site-state-item-count">4</span>
@@ -449,7 +450,7 @@
       <div class="site-state-item site-state-tags">
         
           
-            <a href="/tags/%20%7C%7C%20tags">
+            <a href="/tags/">
           
         
         <span class="site-state-item-count">13</span>
@@ -467,7 +468,7 @@
       
         
       
-        <a href="https://github.com/xiaolong-jin" title="GitHub &amp;rarr; https:&#x2F;&#x2F;github.com&#x2F;xiaolong-jin" rel="noopener" target="_blank">&lt;i class&#x3D;&quot;fa fa-fw fa-github&quot;&gt;&lt;&#x2F;i&gt;GitHub</a>
+        <a href="https://github.com/xiaolong-jin" title="GitHub &rarr; https://github.com/xiaolong-jin" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
       </span>
     
   </div>
@@ -492,9 +493,9 @@
   </span>
   <span class="author" itemprop="copyrightHolder">xiaolong.jin</span>
 </div>
-  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.0</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
   <span class="post-meta-divider">|</span>
-  <div class="theme-info">Theme – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.4.0</div>
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.4.0</div>
 
         
 
@@ -520,18 +521,10 @@
   <script src="/lib/anime.min.js?v=3.1.0"></script>
   <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
   <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/muse.js?v=7.4.0"></script>
 
-<script src="/js/utils.js?v=7.4.0.js"></script>
-
-<script src="/js/motion.js?v=7.4.0.js"></script>
-
-
-<script src="/js/schemes/muse.js?v=7.4.0.js"></script>
-
-
-
-<script src="/js/next-boot.js?v=7.4.0.js"></script>
-
+<script src="/js/next-boot.js?v=7.4.0"></script>
 
 
 

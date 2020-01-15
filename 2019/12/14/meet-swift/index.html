@@ -9,7 +9,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 3.9.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.0">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.0">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.0">
@@ -56,16 +56,17 @@
 </script>
 
   <meta name="description" content="又见 Swift本文主要从公司团队的角度出发，讲解一些 Swift 中比较难以理解的概念。因已经零星接触过一些 Swift 的知识，所以不会全面罗列。访问级别控制12345678910open class Student &amp;#123;  open var name: String?  public var age: Int?  internal var addresses: Address?  s">
+<meta name="keywords" content="swift">
 <meta property="og:type" content="article">
 <meta property="og:title" content="meet swift">
 <meta property="og:url" content="http://yoursite.com/2019/12/14/meet-swift/index.html">
 <meta property="og:site_name" content="猫咪不吃小鱼干">
 <meta property="og:description" content="又见 Swift本文主要从公司团队的角度出发，讲解一些 Swift 中比较难以理解的概念。因已经零星接触过一些 Swift 的知识，所以不会全面罗列。访问级别控制12345678910open class Student &amp;#123;  open var name: String?  public var age: Int?  internal var addresses: Address?  s">
-<meta property="article:published_time" content="2019-12-14T02:10:48.000Z">
-<meta property="article:modified_time" content="2020-01-12T13:47:00.846Z">
-<meta property="article:author" content="xiaolong.jin">
-<meta property="article:tag" content="swift">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-01-12T13:47:00.846Z">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="meet swift">
+<meta name="twitter:description" content="又见 Swift本文主要从公司团队的角度出发，讲解一些 Swift 中比较难以理解的概念。因已经零星接触过一些 Swift 的知识，所以不会全面罗列。访问级别控制12345678910open class Student &amp;#123;  open var name: String?  public var age: Int?  internal var addresses: Address?  s">
   <link rel="canonical" href="http://yoursite.com/2019/12/14/meet-swift/">
 
 
@@ -154,7 +155,7 @@
       
     
 
-    <a href="/" rel="section">&lt;i class&#x3D;&quot;menu-item-icon fa fa-fw fa-home&quot;&gt;&lt;&#x2F;i&gt; &lt;br&gt;Home</a>
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
 
   </li>
       
@@ -165,7 +166,7 @@
       
     
 
-    <a href="/archives/" rel="section">&lt;i class&#x3D;&quot;menu-item-icon fa fa-fw fa-archive&quot;&gt;&lt;&#x2F;i&gt; &lt;br&gt;Archives</a>
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
 
   </li>
       
@@ -176,7 +177,7 @@
       
     
 
-    <a href="/categories/" rel="section">&lt;i class&#x3D;&quot;menu-item-icon fa fa-fw fa-th&quot;&gt;&lt;&#x2F;i&gt; &lt;br&gt;Categories</a>
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories</a>
 
   </li>
       
@@ -187,7 +188,7 @@
       
     
 
-    <a href="/tags/" rel="section">&lt;i class&#x3D;&quot;menu-item-icon fa fa-fw fa-tags&quot;&gt;&lt;&#x2F;i&gt; &lt;br&gt;Tags</a>
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
 
   </li>
       
@@ -198,7 +199,7 @@
       
     
 
-    <a href="/about/" rel="section">&lt;i class&#x3D;&quot;menu-item-icon fa fa-fw fa-users&quot;&gt;&lt;&#x2F;i&gt; &lt;br&gt;About</a>
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-users"></i> <br>About</a>
 
   </li>
   </ul>
@@ -350,12 +351,14 @@
 <p>关于 <code>oldValue</code> 和 <code>newValue</code>:<br><code>willSet</code> 和 <code>set</code> 中可以通过 <code>get</code> 获取旧值，<code>newValue</code> 获取新值。<br><code>didSet</code> 中可以通过 <code>get</code> 获取新值，<code>oldValue</code> 获取旧值。</p>
 </blockquote>
 <figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span> </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> number: <span class="type">Int</span> &#123;</span><br><span class="line">    <span class="keyword">get</span> &#123;</span><br><span class="line">      <span class="built_in">print</span>(<span class="string">"get"</span>)</span><br><span class="line">      <span class="keyword">return</span> <span class="number">1</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">set</span> &#123; <span class="built_in">print</span>(<span class="string">"set"</span>) &#125;</span><br><span class="line">    <span class="comment">// willSet &#123;&#125; // 不能和 set/get 一起使用</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">B</span>: <span class="title">A</span> </span>&#123;</span><br><span class="line">  <span class="keyword">override</span> <span class="keyword">var</span> number: <span class="type">Int</span> &#123;</span><br><span class="line">    <span class="keyword">willSet</span> &#123; <span class="built_in">print</span>(<span class="string">"willSet"</span>) &#125;</span><br><span class="line">    <span class="keyword">didSet</span> &#123; <span class="built_in">print</span>(<span class="string">"didSet"</span>) &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> b = <span class="type">B</span>()</span><br><span class="line">b.number = <span class="number">0</span></span><br><span class="line"><span class="comment">// get</span></span><br><span class="line"><span class="comment">// willSet</span></span><br><span class="line"><span class="comment">// set</span></span><br><span class="line"><span class="comment">// didSet</span></span><br></pre></td></tr></table></figure>
+
 <p>上述例子中，先调用了一次 <code>get</code>, 因为 <code>didSet</code> 中用到的 <code>oldValue</code>，这个值需要在整个 set 动作之前先存储起来。如果不实现 <code>didSet</code> 方法，就不会调用 <code>get</code> 了。</p>
 <h2 id="Optional"><a href="#Optional" class="headerlink" title="Optional ?!"></a>Optional ?!</h2><p>在 OC 中，你可以将一个 nil 赋值给一个 <code>NSString *</code> 型的变量：</p>
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSString</span> *name = <span class="literal">nil</span>;</span><br></pre></td></tr></table></figure>
 
 <p>但在 Swift 中，以下操作是不被允许的：</p>
 <figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> name: <span class="type">String</span> = <span class="literal">nil</span> <span class="comment">// compile error</span></span><br></pre></td></tr></table></figure>
+
 <p>必须写成</p>
 <figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> name: <span class="type">String?</span> = <span class="literal">nil</span></span><br></pre></td></tr></table></figure>
 
@@ -378,6 +381,7 @@
 </blockquote>
 <p>通过实现 <code>ExpressibleByNilLiteral</code> 协议，我们可以让一个 <code>String</code> 类型的变量直接被 <code>nil</code> 赋值。</p>
 <figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">extension</span> <span class="title">String</span>: <span class="title">ExpressibleByNilLiteral</span> </span>&#123;</span><br><span class="line">  <span class="comment">/// Creates an instance initialized with `nil`.</span></span><br><span class="line">  <span class="keyword">init</span>(nilLiteral: ()) &#123;</span><br><span class="line">    <span class="keyword">self</span>.<span class="keyword">init</span>(<span class="string">"This is a nil String"</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> name: <span class="type">String</span> = <span class="literal">nil</span></span><br><span class="line"><span class="built_in">print</span>(a) <span class="comment">// This is a nil String</span></span><br></pre></td></tr></table></figure>
+
 <h3 id="解包"><a href="#解包" class="headerlink" title="解包"></a>解包</h3><p>我们已经知道 <code>NSString?</code> 其实就是 <code>NSString</code> 的一个包装类型，当我们想通过 <code>NSString?</code> 获取到 <code>NSString</code> 时，我们就需要<strong>解包</strong>操作。</p>
 <p>常见的解包操作有：</p>
 <ul>
@@ -388,7 +392,6 @@
 <figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">func</span> <span class="title">drawXAxisLines</span><span class="params">(<span class="number">_</span> ctx: CGContext)</span></span> &#123;</span><br><span class="line"></span><br><span class="line">  ctx.saveGState()</span><br><span class="line">  <span class="keyword">defer</span> &#123; <span class="comment">// func 返回的时候会走这一步</span></span><br><span class="line">    ctx.restoreGState()</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">guard</span> xAxis.isDrawAxisLinesEnabled <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// xAxis.entries: [Double]?</span></span><br><span class="line">  <span class="keyword">guard</span> <span class="keyword">let</span> entries = xAxis.entries, entries.<span class="built_in">count</span> &gt; <span class="number">0</span> <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// ... do something ...</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> <span class="keyword">let</span> phase = xAxis.phase, <span class="keyword">let</span> lengths = xAxis.lengths &#123;</span><br><span class="line">    ctx.setLineDash(phase: phase, lengths: lengths)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">let</span> color = (xAxis.lineColor ?? .black).cgColor</span><br><span class="line">  ctx.setStrockColor(color)</span><br><span class="line"></span><br><span class="line">  <span class="comment">// ... others</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// 由于 entries.count &gt; 0 已经保证 first 不为 nil</span></span><br><span class="line">  <span class="comment">// 建议从程序角度出发来使用，而不是业务逻辑角度</span></span><br><span class="line">  <span class="keyword">let</span> firstEntry = entries.first!</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <h3 id="隐式加解包"><a href="#隐式加解包" class="headerlink" title="隐式加解包"></a>隐式加解包</h3><figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">// 隐式加包</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">implicitPack</span><span class="params">(<span class="number">_</span> string: String?)</span></span> &#123; <span class="comment">/*...*/</span> &#125;</span><br><span class="line"><span class="keyword">let</span> str1: <span class="type">String</span> = <span class="string">""</span></span><br><span class="line">implicitPack(str1) <span class="comment">// 将 String 打包成 Optional&lt;String&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 隐式解包</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">implicitUnpack</span><span class="params">(<span class="number">_</span> string: String!)</span></span> &#123;</span><br><span class="line">  <span class="keyword">let</span> str: <span class="type">String</span> = string <span class="comment">// 将 Optional&lt;String&gt; 解包成 String</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 
 <h2 id="operator-和-autoclosure"><a href="#operator-和-autoclosure" class="headerlink" title="operator 和 @autoclosure"></a>operator 和 @autoclosure</h2><h3 id="operator"><a href="#operator" class="headerlink" title="operator"></a>operator</h3><p>通过 cmd + 点击 <code>??</code>, 我们可以看到 <code>??</code> 的定义</p>
 <figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">func</span> ?? &lt;T&gt;<span class="params">(<span class="keyword">optional</span>: T?, defaultValue: @autoclosure <span class="params">()</span></span></span> <span class="keyword">throws</span> -&gt; <span class="type">T</span>) <span class="keyword">rethrows</span> -&gt; <span class="type">T</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">func</span> ?? &lt;T&gt;<span class="params">(<span class="keyword">optional</span>: T?, defaultValue: @autoclosure <span class="params">()</span></span></span> <span class="keyword">throws</span> -&gt; <span class="type">T?</span>) <span class="keyword">rethrows</span> -&gt; <span class="type">T?</span></span><br></pre></td></tr></table></figure>
@@ -410,7 +413,6 @@
 
 <p>对于 OC 中传入二维指针的参数（多为 NSError **），可以使用 Tuple 返回。<br>当目前的 Swift 版本中，错误的处理基本已改为 throw 机制。</p>
 <figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="comment">// objc</span></span><br><span class="line"><span class="comment">// CG_EXTERN void CGRectDivide(CGRect rect,CGRect *slice,CGRect *remainder,CGFloat amount,</span></span><br><span class="line"><span class="type">CGRectEdge</span> edge)</span><br><span class="line"><span class="comment">// CGRect rect=CGRectMake(0,0,100,100);</span></span><br><span class="line"><span class="comment">// CGRect small;</span></span><br><span class="line"><span class="comment">// CGRect large;</span></span><br><span class="line"><span class="comment">// CGRectDivide(rect,&amp;small,&amp;large,20,CGRectMinXEdge);</span></span><br><span class="line"><span class="comment">//将10,0,100,100&#125;的矩形切分成10,0,20,100&#125;和120,0,80,100&#125;两部分</span></span><br><span class="line"><span class="class"><span class="keyword">extension</span> <span class="title">CGRect</span></span>&#123;</span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">func</span> <span class="title">divided</span><span class="params">(atDistance:CGFloat,from fromEdge:CGRectEdge)</span></span>-&gt;(slice:<span class="type">CGRect</span>,</span><br><span class="line">remainder:<span class="type">CGRect</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> rect=<span class="type">CGRect</span>(<span class="number">0</span>,<span class="number">0</span>,<span class="number">100</span>;<span class="number">100</span>)</span><br><span class="line"><span class="keyword">let</span>(small,large)=rect.divided(<span class="number">20</span>,.minXEdge)</span><br><span class="line">d/ <span class="keyword">let</span>(small,<span class="number">_</span>)=rect.divided(<span class="number">20</span>,.minXEdge)</span><br></pre></td></tr></table></figure>
-
 
 <h2 id="Range"><a href="#Range" class="headerlink" title="Range"></a>Range</h2><h2 id="Enum"><a href="#Enum" class="headerlink" title="Enum"></a>Enum</h2><h2 id="OptionSet-和-Protocol-Extension"><a href="#OptionSet-和-Protocol-Extension" class="headerlink" title="OptionSet 和 Protocol Extension"></a>OptionSet 和 Protocol Extension</h2>
     </div>
@@ -513,7 +515,7 @@
   <nav class="site-state motion-element">
       <div class="site-state-item site-state-posts">
         
-          <a href="/archives/%20%7C%7C%20archive">
+          <a href="/archives/">
         
           <span class="site-state-item-count">9</span>
           <span class="site-state-item-name">posts</span>
@@ -525,7 +527,7 @@
       <div class="site-state-item site-state-categories">
         
           
-            <a href="/categories/%20%7C%7C%20th">
+            <a href="/categories/">
           
         
         <span class="site-state-item-count">4</span>
@@ -538,7 +540,7 @@
       <div class="site-state-item site-state-tags">
         
           
-            <a href="/tags/%20%7C%7C%20tags">
+            <a href="/tags/">
           
         
         <span class="site-state-item-count">13</span>
@@ -556,7 +558,7 @@
       
         
       
-        <a href="https://github.com/xiaolong-jin" title="GitHub &amp;rarr; https:&#x2F;&#x2F;github.com&#x2F;xiaolong-jin" rel="noopener" target="_blank">&lt;i class&#x3D;&quot;fa fa-fw fa-github&quot;&gt;&lt;&#x2F;i&gt;GitHub</a>
+        <a href="https://github.com/xiaolong-jin" title="GitHub &rarr; https://github.com/xiaolong-jin" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
       </span>
     
   </div>
@@ -581,9 +583,9 @@
   </span>
   <span class="author" itemprop="copyrightHolder">xiaolong.jin</span>
 </div>
-  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.0</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
   <span class="post-meta-divider">|</span>
-  <div class="theme-info">Theme – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.4.0</div>
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.4.0</div>
 
         
 
@@ -609,18 +611,10 @@
   <script src="/lib/anime.min.js?v=3.1.0"></script>
   <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
   <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/muse.js?v=7.4.0"></script>
 
-<script src="/js/utils.js?v=7.4.0.js"></script>
-
-<script src="/js/motion.js?v=7.4.0.js"></script>
-
-
-<script src="/js/schemes/muse.js?v=7.4.0.js"></script>
-
-
-
-<script src="/js/next-boot.js?v=7.4.0.js"></script>
-
+<script src="/js/next-boot.js?v=7.4.0"></script>
 
 
 
