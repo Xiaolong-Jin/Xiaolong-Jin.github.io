@@ -64,7 +64,7 @@
 <meta property="og:description" content="又见 Swift本文主要从公司团队的角度出发，讲解一些 Swift 中比较难以理解的概念。因已经零星接触过一些 Swift 的知识，所以不会全面罗列。访问级别控制12345678910open class Student &amp;#123;  open var name: String?  public var age: Int?  internal var addresses: Address?  s">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/2019/12/14/meet-swift/coordinate-system.png">
-<meta property="og:updated_time" content="2020-01-16T16:03:15.651Z">
+<meta property="og:updated_time" content="2020-01-16T16:21:36.870Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="meet swift">
 <meta name="twitter:description" content="又见 Swift本文主要从公司团队的角度出发，讲解一些 Swift 中比较难以理解的概念。因已经零星接触过一些 Swift 的知识，所以不会全面罗列。访问级别控制12345678910open class Student &amp;#123;  open var name: String?  public var age: Int?  internal var addresses: Address?  s">
@@ -270,7 +270,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-01-17 00:03:15" itemprop="dateModified" datetime="2020-01-17T00:03:15+08:00">2020-01-17</time>
+                <time title="Modified: 2020-01-17 00:21:36" itemprop="dateModified" datetime="2020-01-17T00:21:36+08:00">2020-01-17</time>
               </span>
             
           
@@ -423,7 +423,17 @@
 <p><strong>Tuple 可以结合 Range 一起使用</strong></p>
 <figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> point = (<span class="number">1</span>, <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">switch</span> point &#123;</span><br><span class="line"><span class="keyword">case</span> (<span class="number">0</span>, <span class="number">0</span>):</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">"(0, 0) is at the origin"</span>)</span><br><span class="line"><span class="keyword">case</span> (<span class="number">_</span>, <span class="number">0</span>):</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">"(\(point.0), 0) is on the x-axis"</span>)</span><br><span class="line"><span class="keyword">case</span> (<span class="number">0</span>, <span class="number">_</span>):</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">"(0, \(point.1)) is on the y-axis"</span>)</span><br><span class="line"><span class="keyword">case</span> (-<span class="number">2</span>...<span class="number">2</span>, -<span class="number">2</span>...<span class="number">2</span>):</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">"(\(point.0), \(point.1)) is inside the box"</span>)</span><br><span class="line"><span class="keyword">default</span>:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">"(\(point.0), \(point.1)) is out of the box"</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h2 id="Range"><a href="#Range" class="headerlink" title="Range"></a>Range</h2><h2 id="Enum"><a href="#Enum" class="headerlink" title="Enum"></a>Enum</h2><h2 id="OptionSet-和-Protocol-Extension"><a href="#OptionSet-和-Protocol-Extension" class="headerlink" title="OptionSet 和 Protocol Extension"></a>OptionSet 和 Protocol Extension</h2>
+<h2 id="Range"><a href="#Range" class="headerlink" title="Range"></a>Range</h2><p>常用的两个范围运算符</p>
+<ul>
+<li>..&lt;</li>
+<li>…</li>
+</ul>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> lowercase = <span class="string">"a"</span>...<span class="string">"z"</span></span><br><span class="line"><span class="built_in">print</span>(lowercase.<span class="built_in">contains</span>(<span class="string">"z"</span>))  <span class="comment">// Prints "true"</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> lessThanFive = <span class="number">0.0</span>..&lt;<span class="number">5.0</span></span><br><span class="line"><span class="built_in">print</span>(lessThanFive.<span class="built_in">contains</span>(<span class="number">3.14</span>))  <span class="comment">// Prints "true"</span></span><br><span class="line"><span class="built_in">print</span>(lessThanFive.<span class="built_in">contains</span>(<span class="number">5.0</span>))   <span class="comment">// Prints "false"</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>\0…~ 代表全体 ASCII</p>
+</blockquote>
+<h2 id="Enum"><a href="#Enum" class="headerlink" title="Enum"></a>Enum</h2><h2 id="OptionSet-和-Protocol-Extension"><a href="#OptionSet-和-Protocol-Extension" class="headerlink" title="OptionSet 和 Protocol Extension"></a>OptionSet 和 Protocol Extension</h2>
     </div>
 
     
