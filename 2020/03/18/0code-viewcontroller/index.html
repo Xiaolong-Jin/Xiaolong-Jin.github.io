@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="转载自：http://blog.sunnyxx.com/2014/07/17/ios_0code_vc/ 作者 | sunnyxx  我是前言看了 objc.io 中的《Behaviors in iOS Apps》（objccn上也有中文翻译版）后，终于如梦初醒了 IB 中的这个低调的 Object 存在的意义：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【转载】0代码ViewController">
+<meta property="og:url" content="http://yoursite.com/2020/03/18/0code-viewcontroller/index.html">
+<meta property="og:site_name" content="猫咪不吃小鱼干">
+<meta property="og:description" content="转载自：http://blog.sunnyxx.com/2014/07/17/ios_0code_vc/ 作者 | sunnyxx  我是前言看了 objc.io 中的《Behaviors in iOS Apps》（objccn上也有中文翻译版）后，终于如梦初醒了 IB 中的这个低调的 Object 存在的意义：">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2020/03/18/0code-viewcontroller/object.jpg">
+<meta property="og:image" content="http://yoursite.com/2020/03/18/0code-viewcontroller/runtime_attributes.jpg">
+<meta property="og:image" content="http://yoursite.com/2020/03/18/0code-viewcontroller/toplevelobject.jpg">
+<meta property="og:image" content="http://yoursite.com/2020/03/18/0code-viewcontroller/login.jpg">
+<meta property="og:image" content="http://yoursite.com/2020/03/18/0code-viewcontroller/iboutlet.jpg">
+<meta property="og:image" content="http://yoursite.com/2020/03/18/0code-viewcontroller/demo.gif">
+<meta property="og:updated_time" content="2020-03-19T16:17:53.236Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="【转载】0代码ViewController">
+<meta name="twitter:description" content="转载自：http://blog.sunnyxx.com/2014/07/17/ios_0code_vc/ 作者 | sunnyxx  我是前言看了 objc.io 中的《Behaviors in iOS Apps》（objccn上也有中文翻译版）后，终于如梦初醒了 IB 中的这个低调的 Object 存在的意义：">
+<meta name="twitter:image" content="http://yoursite.com/2020/03/18/0code-viewcontroller/object.jpg">
+  <link rel="canonical" href="http://yoursite.com/2020/03/18/0code-viewcontroller/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>【转载】0代码ViewController | 猫咪不吃小鱼干</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">猫咪不吃小鱼干</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-users"></i> <br>About</a>
+
+  </li>
+  </ul>
+
+    
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/18/0code-viewcontroller/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xiaolong.jin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="猫咪不吃小鱼干">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">【转载】0代码ViewController
+
+          
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2020-03-18 00:30:18" itemprop="dateCreated datePublished" datetime="2020-03-18T00:30:18+08:00">2020-03-18</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-03-20 00:17:53" itemprop="dateModified" datetime="2020-03-20T00:17:53+08:00">2020-03-20</time>
+              </span>
+            
+          
+
+          
+            <span id="/2020/03/18/0code-viewcontroller/" class="post-meta-item leancloud_visitors" data-flag-title="【转载】0代码ViewController" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+        
+      
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2020/03/18/0code-viewcontroller/#comments" itemprop="discussionUrl"><span class="post-comments-count valine-comment-count" data-xid="/2020/03/18/0code-viewcontroller/" itemprop="commentCount"></span></a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote>
+<p>转载自：<a href="http://blog.sunnyxx.com/2014/07/17/ios_0code_vc/" target="_blank" rel="noopener">http://blog.sunnyxx.com/2014/07/17/ios_0code_vc/</a></p>
+</blockquote><p><em>作者 | sunnyxx</em>  </p><h2 id="我是前言"><a href="#我是前言" class="headerlink" title="我是前言"></a>我是前言</h2><p>看了 <code>objc.io</code> 中的<a href="http://www.objc.io/issue-13/behaviors.html" target="_blank" rel="noopener">《Behaviors in iOS Apps》</a>（objccn上也有<a href="http://objccn.io/issue-13-3/" target="_blank" rel="noopener">中文翻译版</a>）后，终于<strong>如梦初醒</strong>了 IB 中的这个低调的 <code>Object</code> 存在的意义：</p><a id="more"></a>
+
+
+<p><img src="/2020/03/18/0code-viewcontroller/object.jpg" alt></p>
+<p>再加上同样被轻视的 Runtime Attributes:</p>
+<p><img src="/2020/03/18/0code-viewcontroller/runtime_attributes.jpg" alt></p>
+<p>有了这些，IB才算完整和强大。<br>最近看了一些文章，加上工程中也遇到的坑，矛头都指向了 <strong>MVC(Massive View Controller)</strong> ：臃肿的 ViewController 所引发的不爽， <code>objc.io</code> 也是以一个<a href="http://www.objc.io/issue-1/" target="_blank" rel="noopener">《Lighter View Controllers》</a>开篇。从把 DataSource 和 Delegate 从 VC 中分离，到把 Model 逻辑整个分离的 <code>MVVM</code>，VC 一步步瘦身，再到这篇 Behavior 模式巧妙的组件式的分离了功能。但有没有想过，为啥往一个页面写点啥东西就一定要子类化一个 VC 呢，使用上面两个IB的功能，我们可以激进地实验一次 0 代码 ViewController</p>
+<h2 id="Top-Level-Objects"><a href="#Top-Level-Objects" class="headerlink" title="Top Level Objects"></a>Top Level Objects</h2><p>首先必须说明 Top Level Objects 这个概念，根据 Apple 文档：</p>
+<blockquote>
+<p>The top-level objects are the subset of these objects that do not have a parent object. The top-level objects typically include only the windows, menubars, and custom controller objects that you add to the nib file. (Objects such as File’s Owner, First Responder, and Application are placeholder objects and not considered top-level objects.)</p>
+</blockquote>
+<p>所以，IB 里面的 <code>Object</code> 控件其实就是向 Controller 中添加 <code>Custom Top Level Object</code>，在 storyboard 中被摆在下面的位置：</p>
+<p><img src="/2020/03/18/0code-viewcontroller/toplevelobject.jpg" alt></p>
+<p>事实上任何Object都可以添加，这里出现了一个 LoginViewModel 对象、一个菊花、一个Tap手势。</p>
+<h3 id="Nib对象的创建顺序"><a href="#Nib对象的创建顺序" class="headerlink" title="Nib对象的创建顺序"></a>Nib对象的创建顺序</h3><ol>
+<li>自定义的 Top Level Objects 收到 <code>- init</code> 消息</li>
+<li>ViewController 收到 <code>- initWithCoder:</code> 消息</li>
+<li>自定义的 Top Level Objects 收到 <code>- awakeFromNib</code> 消息</li>
+<li>ViewController 收到 <code>- awakeFromNib</code> 消息</li>
+<li>子 View 分别收到 <code>- initWithCoder:</code> 消息</li>
+<li>子 View 分别收到 <code>- awakeFromNib</code> 消息</li>
+</ol>
+<p>可见自定义的 Object 的创建时间是早于 VC 的，至于为什么 <code>- awakeFromNib</code> 收到的晚于 VC 的创建，是因为创建出来的 Object 需要被 VC 强引用</p>
+<h3 id="VC-对自定义-Objects-的强引用"><a href="#VC-对自定义-Objects-的强引用" class="headerlink" title="VC 对自定义 Objects 的强引用"></a>VC 对自定义 Objects 的强引用</h3><p>创建出来的 Object 必须保证不被释放，这个强引用由 VC 实现，虽说没有显示的 API，但从 <code>UIViewController.h</code> 中可以看到马脚：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">@interface UIViewController : UIResponder &#123;</span><br><span class="line">    @package</span><br><span class="line">    // ...</span><br><span class="line">    NSDictionary  *_externalObjectsTableForViewLoading;</span><br><span class="line">    NSArray       *_topLevelObjectsToKeepAliveFromStoryboard;</span><br><span class="line">    // ...   </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>通过 KVC 可以很轻松的取出来：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">NSArray *objs = [vc valueForKey:@&quot;_topLevelObjectsToKeepAliveFromStoryboard&quot;];</span><br><span class="line">NSDictionary *dict = [vc valueForKey:@&quot;_externalObjectsTableForViewLoading&quot;];</span><br></pre></td></tr></table></figure>
+
+<p>这些 objects 就是被这个数组强引用的，感兴趣的可以打印下看看结果。<br><em>注：只在storyboard下生效，在xib下，被创建的Object因为没有被强引用而随后被释放。</em></p>
+<h2 id="构建0代码VC的简单登录场景"><a href="#构建0代码VC的简单登录场景" class="headerlink" title="构建0代码VC的简单登录场景"></a>构建0代码VC的简单登录场景</h2><p>storyboard中拉出个VC，随便摆摆：</p>
+<p><img src="/2020/03/18/0code-viewcontroller/login.jpg" alt></p>
+<p><strong>创建一个 ViewModel 类（也就是 Behavior 类），里面写需要的 IBOutlet 和 IBAction</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">@interface XXLoginViewModel : NSObject</span><br><span class="line">@property (nonatomic, weak) IBOutlet UIViewController *ownerViewController;</span><br><span class="line">@property (nonatomic, weak) IBOutlet UITextField *usernameTextField;</span><br><span class="line">@property (nonatomic, weak) IBOutlet UITextField *passwordTextField;</span><br><span class="line">@property (nonatomic, weak) IBOutlet UIActivityIndicatorView *spinner;</span><br><span class="line">- (IBAction)loginAction:(id)sender;</span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+
+<p>storyboard中拖出来一个 Object 到左边，设置类为这个 <code>XXLoginViewModel</code>, 将所有 IBOutlet 和 IBAction 连接好</p>
+<p><img src="/2020/03/18/0code-viewcontroller/iboutlet.jpg" alt></p>
+<p>这样，就可以在自定义 Object 中为所欲为了，需要什么就从 storyboard 里面 Outlet 出来就好了，比如点击之后的跳转：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">- (IBAction)loginAction:(id)sender &#123;</span><br><span class="line">    [self.ownerViewController performSegueWithIdentifier:@&quot;LoginSegue&quot; sender:nil];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>具体的代码不show了，Demo的效果如下：</p>
+<p><img src="/2020/03/18/0code-viewcontroller/demo.gif" alt></p>
+<p>当然，TableView 的 delegate 和 data source 也都是可以托管到自定义 Object 中，同时，Object 之间也可以有 Outlet 关系哦，剩下的就纯靠想象力了。</p>
+<p>这个简单的demo从<a href="https://github.com/sunnyxx/XXZeroCodeViewControllerDemo" target="_blank" rel="noopener">-&gt;这里下载&lt;-</a></p>
+<h2 id="What’s-more"><a href="#What’s-more" class="headerlink" title="What’s more"></a>What’s more</h2><ul>
+<li><p>首先，这次实验并非表明我们应该写 0 代码的 VC，UIViewController 本身被设计作为一个<code>模板类</code>，继承+重载无可非议（但像 UITableView 这种被设计成<code>配置类</code>的类，我们更应该去配置它，而非继承它，更别说 NSArray，NSString 这种类簇的工具类了）</p>
+</li>
+<li><p>组合模式以十分灵活的方式划分功能，Demo 中只用了一个 ViewModel，其实完全可以组合一个 Animation 类实现动画，组合一个 HTTP 类来发请求？，组合一个处理旋转屏幕的类等等，而且 <strong>完成这些子功能的代码集中在一个类中，而不是分散在VC的各个角落，两个功能的小模块间可以说没有耦合</strong></p>
+</li>
+<li><p>VC 没有代码，但 storyboard 已经干了 VC 该干的事，如创建和布局子 View、设置 Autolayout、设置 action，定义跳转等。我想，Apple 祭出 storyboard 的目的就在于将纯视图和纯代码逻辑分离，VC 本该 Control 它的 View，而不是自己就是那个 View</p>
+</li>
+</ul>
+<h2 id="References"><a href="#References" class="headerlink" title="References"></a>References</h2><p><a href="https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/LoadingResources/CocoaNibs/CocoaNibs.html" target="_blank" rel="noopener">https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/LoadingResources/CocoaNibs/CocoaNibs.html</a><br><a href="http://www.objc.io/issue-13/behaviors.html" target="_blank" rel="noopener">http://www.objc.io/issue-13/behaviors.html</a></p>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2020/03/09/MVC/" rel="next" title="【转载】唯一可行的 iOS 架构">
+                  <i class="fa fa-chevron-left"></i> 【转载】唯一可行的 iOS 架构
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+    
+    <div class="comments" id="comments"></div>
+  
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#我是前言"><span class="nav-number">1.</span> <span class="nav-text">我是前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Top-Level-Objects"><span class="nav-number">2.</span> <span class="nav-text">Top Level Objects</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Nib对象的创建顺序"><span class="nav-number">2.1.</span> <span class="nav-text">Nib对象的创建顺序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#VC-对自定义-Objects-的强引用"><span class="nav-number">2.2.</span> <span class="nav-text">VC 对自定义 Objects 的强引用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#构建0代码VC的简单登录场景"><span class="nav-number">3.</span> <span class="nav-text">构建0代码VC的简单登录场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#What’s-more"><span class="nav-number">4.</span> <span class="nav-text">What’s more</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#References"><span class="nav-number">5.</span> <span class="nav-text">References</span></a></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/avatar.png"
+      alt="xiaolong.jin">
+  <p class="site-author-name" itemprop="name">xiaolong.jin</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/xiaolong-jin" title="GitHub &rarr; https://github.com/xiaolong-jin" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xiaolong.jin</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.4.0</div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+
+
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/muse.js?v=7.4.0"></script>
+
+<script src="/js/next-boot.js?v=7.4.0"></script>
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.getScript('/js/Valine.min.js', () => {
+  var GUEST = ['nick', 'mail'];
+  var guest = 'nick,mail';
+  guest = guest.split(',').filter(item => {
+    return GUEST.includes(item);
+  });
+
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: false,
+    appId: 'UBpl2ISDelC12yxfw5MjN5jr-gzGzoHsz',
+    appKey: 'S5vHj2gjRWR59TK34BOy9W54',
+    placeholder: '( ゜- ゜)つロ 干杯🍻～',
+    avatar: 'mm',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: true,
+    lang: 'zh-cn' || 'zh-cn',
+    path: location.pathname
+  });
+}, window.Valine);
+</script>
+
+</body>
+</html>
