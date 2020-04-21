@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="一个防止 Charles 等抓包的库。经测试，Wireshark 仍可以抓到。ZXRequestBlock&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;安装通过CocoaPods安装1pod &apos;ZXRequestBlock&apos;手动导入 将ZXRequestBlock拖入项目中。 导入头文件1#import &amp;quot;ZXRequestBlock.h&amp;quot;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="request-block">
+<meta property="og:url" content="http://yoursite.com/2020/04/21/request-block/index.html">
+<meta property="og:site_name" content="猫咪不吃小鱼干">
+<meta property="og:description" content="一个防止 Charles 等抓包的库。经测试，Wireshark 仍可以抓到。ZXRequestBlock&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;安装通过CocoaPods安装1pod &apos;ZXRequestBlock&apos;手动导入 将ZXRequestBlock拖入项目中。 导入头文件1#import &amp;quot;ZXRequestBlock.h&amp;quot;">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://img.shields.io/badge/license-MIT-green.svg?style=flat">
+<meta property="og:image" content="http://img.shields.io/cocoapods/v/ZXRequestBlock.svg?style=flat">
+<meta property="og:image" content="http://img.shields.io/cocoapods/p/ZXRequestBlock.svg?style=flat">
+<meta property="og:image" content="https://img.shields.io/badge/support-iOS%208.0%2B%20-blue.svg?style=flat">
+<meta property="og:image" content="http://www.zxlee.cn/ZXRequestBlockDemo1.gif">
+<meta property="og:updated_time" content="2020-04-21T09:51:27.652Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="request-block">
+<meta name="twitter:description" content="一个防止 Charles 等抓包的库。经测试，Wireshark 仍可以抓到。ZXRequestBlock&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;安装通过CocoaPods安装1pod &apos;ZXRequestBlock&apos;手动导入 将ZXRequestBlock拖入项目中。 导入头文件1#import &amp;quot;ZXRequestBlock.h&amp;quot;">
+<meta name="twitter:image" content="https://img.shields.io/badge/license-MIT-green.svg?style=flat">
+  <link rel="canonical" href="http://yoursite.com/2020/04/21/request-block/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>request-block | 猫咪不吃小鱼干</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">猫咪不吃小鱼干</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-users"></i> <br>About</a>
+
+  </li>
+  </ul>
+
+    
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/21/request-block/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xiaolong.jin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="猫咪不吃小鱼干">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">request-block
+
+          
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2020-04-21 17:48:52 / Modified: 17:51:27" itemprop="dateCreated datePublished" datetime="2020-04-21T17:48:52+08:00">2020-04-21</time>
+            </span>
+          
+            
+
+            
+          
+
+          
+            <span id="/2020/04/21/request-block/" class="post-meta-item leancloud_visitors" data-flag-title="request-block" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+        
+      
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2020/04/21/request-block/#comments" itemprop="discussionUrl"><span class="post-comments-count valine-comment-count" data-xid="/2020/04/21/request-block/" itemprop="commentCount"></span></a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="一个防止-Charles-等抓包的库。经测试，Wireshark-仍可以抓到。"><a href="#一个防止-Charles-等抓包的库。经测试，Wireshark-仍可以抓到。" class="headerlink" title="一个防止 Charles 等抓包的库。经测试，Wireshark 仍可以抓到。"></a>一个防止 Charles 等抓包的库。经测试，Wireshark 仍可以抓到。</h1><h1 id="ZXRequestBlock"><a href="#ZXRequestBlock" class="headerlink" title="ZXRequestBlock"></a>ZXRequestBlock</h1><p><a href="https://raw.githubusercontent.com/smilezxlee/ZXRequestBlock/master/LICENSE" target="_blank" rel="noopener"><img src="https://img.shields.io/badge/license-MIT-green.svg?style=flat" alt="License MIT"></a>&nbsp;<br><a href="http://cocoapods.org/?q=ZXRequestBlock" target="_blank" rel="noopener"><img src="http://img.shields.io/cocoapods/v/ZXRequestBlock.svg?style=flat" alt="CocoaPods"></a>&nbsp;<br><a href="http://cocoapods.org/?q=ZXRequestBlock" target="_blank" rel="noopener"><img src="http://img.shields.io/cocoapods/p/ZXRequestBlock.svg?style=flat" alt="CocoaPods"></a>&nbsp;<br><a href="https://www.apple.com/nl/ios/" target="_blank" rel="noopener"><img src="https://img.shields.io/badge/support-iOS%208.0%2B%20-blue.svg?style=flat" alt="Support"></a>&nbsp;</p><h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><h3 id="通过CocoaPods安装"><a href="#通过CocoaPods安装" class="headerlink" title="通过CocoaPods安装"></a>通过CocoaPods安装</h3><figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pod <span class="string">'ZXRequestBlock'</span></span><br></pre></td></tr></table></figure><h3 id="手动导入"><a href="#手动导入" class="headerlink" title="手动导入"></a>手动导入</h3><ul>
+<li>将ZXRequestBlock拖入项目中。</li>
+</ul><h3 id="导入头文件"><a href="#导入头文件" class="headerlink" title="导入头文件"></a>导入头文件</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#import &quot;ZXRequestBlock.h&quot;</span><br></pre></td></tr></table></figure><a id="more"></a>
+
+
+
+
+
+<hr>
+<h2 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h2><h3 id="拦截全局请求"><a href="#拦截全局请求" class="headerlink" title="拦截全局请求"></a>拦截全局请求</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[ZXRequestBlock handleRequest:^NSURLRequest *(NSURLRequest *request) &#123;</span><br><span class="line">        //拦截回调在异步线程</span><br><span class="line">        NSLog(@&quot;拦截到请求-%@&quot;,request);</span><br><span class="line">        dispatch_async(dispatch_get_main_queue(), ^&#123;</span><br><span class="line">            self.blockTv.text = [self.blockTv.text stringByAppendingString:[NSString stringWithFormat:@&quot;拦截到请求--%@\n&quot;,request]];</span><br><span class="line">        &#125;);</span><br><span class="line">        //在这里可以将request赋值给可变的NSURLRequest，进行一些修改（例如根据request的url过滤单独对一些请求的请求体进行修改等）然后再return，达到修改request的目的。</span><br><span class="line">        return request;</span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
+
+<h3 id="禁止网络代理抓包-开启后将无法通过网络代理抓包，通过Thor，Charles，Burp等均无法抓取此App的包，且在代理网络下App内部请求不受任何影响"><a href="#禁止网络代理抓包-开启后将无法通过网络代理抓包，通过Thor，Charles，Burp等均无法抓取此App的包，且在代理网络下App内部请求不受任何影响" class="headerlink" title="禁止网络代理抓包(开启后将无法通过网络代理抓包，通过Thor，Charles，Burp等均无法抓取此App的包，且在代理网络下App内部请求不受任何影响)"></a>禁止网络代理抓包(开启后将无法通过网络代理抓包，通过Thor，Charles，Burp等均无法抓取此App的包，且在代理网络下App内部请求不受任何影响)</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[ZXRequestBlock disableHttpProxy];</span><br></pre></td></tr></table></figure>
+
+<h3 id="允许网络代理抓包【默认为允许】"><a href="#允许网络代理抓包【默认为允许】" class="headerlink" title="允许网络代理抓包【默认为允许】"></a>允许网络代理抓包【默认为允许】</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[ZXRequestBlock enableHttpProxy];</span><br></pre></td></tr></table></figure>
+
+<h3 id="启用HTTPDNS（将会直接从本地或http-119-29-29-29-进行DNS解析，是一种避免DNS劫持的措施）"><a href="#启用HTTPDNS（将会直接从本地或http-119-29-29-29-进行DNS解析，是一种避免DNS劫持的措施）" class="headerlink" title="启用HTTPDNS（将会直接从本地或http://119.29.29.29 进行DNS解析，是一种避免DNS劫持的措施）"></a>启用HTTPDNS（将会直接从本地或<a href="http://119.29.29.29" target="_blank" rel="noopener">http://119.29.29.29</a> 进行DNS解析，是一种避免DNS劫持的措施）</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[ZXRequestBlock enableHttpDns];</span><br></pre></td></tr></table></figure>
+
+<h3 id="关闭HTTPDNS【默认为关闭】"><a href="#关闭HTTPDNS【默认为关闭】" class="headerlink" title="关闭HTTPDNS【默认为关闭】"></a>关闭HTTPDNS【默认为关闭】</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[ZXRequestBlock disableHttpDns];</span><br></pre></td></tr></table></figure>
+
+<h3 id="禁止所有网络请求"><a href="#禁止所有网络请求" class="headerlink" title="禁止所有网络请求"></a>禁止所有网络请求</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[ZXRequestBlock cancelAllRequest];</span><br></pre></td></tr></table></figure>
+
+<h3 id="恢复所有网络请求"><a href="#恢复所有网络请求" class="headerlink" title="恢复所有网络请求"></a>恢复所有网络请求</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[ZXRequestBlock resumeAllRequest];</span><br></pre></td></tr></table></figure>
+
+<h3 id="防抓包Demo演示"><a href="#防抓包Demo演示" class="headerlink" title="防抓包Demo演示"></a>防抓包Demo演示</h3><img src="http://www.zxlee.cn/ZXRequestBlockDemo1.gif">
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2020/03/28/Xcode-illness/" rel="next" title="Xcode 疑难杂症">
+                  <i class="fa fa-chevron-left"></i> Xcode 疑难杂症
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+    
+    <div class="comments" id="comments"></div>
+  
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一个防止-Charles-等抓包的库。经测试，Wireshark-仍可以抓到。"><span class="nav-number">1.</span> <span class="nav-text">一个防止 Charles 等抓包的库。经测试，Wireshark 仍可以抓到。</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ZXRequestBlock"><span class="nav-number">2.</span> <span class="nav-text">ZXRequestBlock</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装"><span class="nav-number">2.1.</span> <span class="nav-text">安装</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#通过CocoaPods安装"><span class="nav-number">2.1.1.</span> <span class="nav-text">通过CocoaPods安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#手动导入"><span class="nav-number">2.1.2.</span> <span class="nav-text">手动导入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#导入头文件"><span class="nav-number">2.1.3.</span> <span class="nav-text">导入头文件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用方法"><span class="nav-number">2.2.</span> <span class="nav-text">使用方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#拦截全局请求"><span class="nav-number">2.2.1.</span> <span class="nav-text">拦截全局请求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#禁止网络代理抓包-开启后将无法通过网络代理抓包，通过Thor，Charles，Burp等均无法抓取此App的包，且在代理网络下App内部请求不受任何影响"><span class="nav-number">2.2.2.</span> <span class="nav-text">禁止网络代理抓包(开启后将无法通过网络代理抓包，通过Thor，Charles，Burp等均无法抓取此App的包，且在代理网络下App内部请求不受任何影响)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#允许网络代理抓包【默认为允许】"><span class="nav-number">2.2.3.</span> <span class="nav-text">允许网络代理抓包【默认为允许】</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#启用HTTPDNS（将会直接从本地或http-119-29-29-29-进行DNS解析，是一种避免DNS劫持的措施）"><span class="nav-number">2.2.4.</span> <span class="nav-text">启用HTTPDNS（将会直接从本地或http://119.29.29.29 进行DNS解析，是一种避免DNS劫持的措施）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关闭HTTPDNS【默认为关闭】"><span class="nav-number">2.2.5.</span> <span class="nav-text">关闭HTTPDNS【默认为关闭】</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#禁止所有网络请求"><span class="nav-number">2.2.6.</span> <span class="nav-text">禁止所有网络请求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#恢复所有网络请求"><span class="nav-number">2.2.7.</span> <span class="nav-text">恢复所有网络请求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#防抓包Demo演示"><span class="nav-number">2.2.8.</span> <span class="nav-text">防抓包Demo演示</span></a></li></ol></li></ol></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/avatar.png"
+      alt="xiaolong.jin">
+  <p class="site-author-name" itemprop="name">xiaolong.jin</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/xiaolong-jin" title="GitHub &rarr; https://github.com/xiaolong-jin" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xiaolong.jin</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.4.0</div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+
+
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/muse.js?v=7.4.0"></script>
+
+<script src="/js/next-boot.js?v=7.4.0"></script>
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.getScript('/js/Valine.min.js', () => {
+  var GUEST = ['nick', 'mail'];
+  var guest = 'nick,mail';
+  guest = guest.split(',').filter(item => {
+    return GUEST.includes(item);
+  });
+
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: false,
+    appId: 'UBpl2ISDelC12yxfw5MjN5jr-gzGzoHsz',
+    appKey: 'S5vHj2gjRWR59TK34BOy9W54',
+    placeholder: '( ゜- ゜)つロ 干杯🍻～',
+    avatar: 'mm',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: true,
+    lang: 'zh-cn' || 'zh-cn',
+    path: location.pathname
+  });
+}, window.Valine);
+</script>
+
+</body>
+</html>
