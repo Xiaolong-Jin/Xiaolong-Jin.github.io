@@ -55,14 +55,18 @@
   };
 </script>
 
-  <meta property="og:type" content="website">
-<meta property="og:title" content="猫咪不吃小鱼干">
-<meta property="og:url" content="http://yoursite.com/tags/hexo/index.html">
+  <meta name="description" content="Swift QuizStruct 和 Class 的区别，为何要引入 Struct struct是值引用，而class是类型引用 struct没有继承的功能，class有继承功能 更好的安全性，Class 在一个引用中修改值以后，会影响所有的引用。   网上所说的因为 NSMutableArray 的缺陷，我不太同意，因为完全可以用 NSArray 代替呀。。其实举一个普通的 Class 的例子就">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SwiftQuiz">
+<meta property="og:url" content="http://yoursite.com/2020/05/19/SwiftQuiz/index.html">
 <meta property="og:site_name" content="猫咪不吃小鱼干">
+<meta property="og:description" content="Swift QuizStruct 和 Class 的区别，为何要引入 Struct struct是值引用，而class是类型引用 struct没有继承的功能，class有继承功能 更好的安全性，Class 在一个引用中修改值以后，会影响所有的引用。   网上所说的因为 NSMutableArray 的缺陷，我不太同意，因为完全可以用 NSArray 代替呀。。其实举一个普通的 Class 的例子就">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-05-19T01:32:39.224Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="猫咪不吃小鱼干">
-  <link rel="canonical" href="http://yoursite.com/tags/hexo/">
+<meta name="twitter:title" content="SwiftQuiz">
+<meta name="twitter:description" content="Swift QuizStruct 和 Class 的区别，为何要引入 Struct struct是值引用，而class是类型引用 struct没有继承的功能，class有继承功能 更好的安全性，Class 在一个引用中修改值以后，会影响所有的引用。   网上所说的因为 NSMutableArray 的缺陷，我不太同意，因为完全可以用 NSArray 代替呀。。其实举一个普通的 Class 的例子就">
+  <link rel="canonical" href="http://yoursite.com/2020/05/19/SwiftQuiz/">
 
 
 <script id="page-configurations">
@@ -70,13 +74,13 @@
   CONFIG.page = {
     sidebar: "",
     isHome: false,
-    isPost: false,
+    isPost: true,
     isPage: false,
     isArchive: false
   };
 </script>
 
-  <title>Tag: hexo | 猫咪不吃小鱼干</title>
+  <title>SwiftQuiz | 猫咪不吃小鱼干</title>
   
 
 
@@ -201,27 +205,6 @@
 
     
 
-    
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-    
-
-  
-
 </nav>
 </div>
     </header>
@@ -239,64 +222,139 @@
           <div id="content" class="content">
             
 
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
   
   
   
-  <div class="post-block tag">
-    <div id="posts" class="posts-collapse">
-      <div class="collection-title">
-        <h2 class="collection-header">hexo<small>Tag</small>
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/05/19/SwiftQuiz/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xiaolong.jin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="猫咪不吃小鱼干">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">SwiftQuiz
+
+          
         </h2>
-      </div>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2020-05-19 09:26:24 / Modified: 09:32:39" itemprop="dateCreated datePublished" datetime="2020-05-19T09:26:24+08:00">2020-05-19</time>
+            </span>
+          
+            
+
+            
+          
+
+          
+            <span id="/2020/05/19/SwiftQuiz/" class="post-meta-item leancloud_visitors" data-flag-title="SwiftQuiz" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+        
+      
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2020/05/19/SwiftQuiz/#comments" itemprop="discussionUrl"><span class="post-comments-count valine-comment-count" data-xid="/2020/05/19/SwiftQuiz/" itemprop="commentCount"></span></a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
+        <h1 id="Swift-Quiz"><a href="#Swift-Quiz" class="headerlink" title="Swift Quiz"></a>Swift Quiz</h1><h2 id="Struct-和-Class-的区别，为何要引入-Struct"><a href="#Struct-和-Class-的区别，为何要引入-Struct" class="headerlink" title="Struct 和 Class 的区别，为何要引入 Struct"></a>Struct 和 Class 的区别，为何要引入 Struct</h2><ul>
+<li>struct是值引用，而class是类型引用</li>
+<li>struct没有继承的功能，class有继承功能</li>
+</ul><p>更好的安全性，Class 在一个引用中修改值以后，会影响所有的引用。  </p><blockquote>
+<p>网上所说的因为 NSMutableArray 的缺陷，我不太同意，因为完全可以用 NSArray 代替呀。。其实举一个普通的 Class 的例子就可以说明。</p>
+</blockquote><a id="more"></a>
 
-  
-  
 
-  
+<p>Swift 面向协议编程，不需要继承功能。</p>
+
+    </div>
+
     
-    <div class="collection-year">
-      <h2 class="collection-header">2019</h2>
-    </div>
-  
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h3 class="post-title">
+    
+    
         
-          <a class="post-title-link" href="/2019/08/31/get-started/" itemprop="url">
-            <span itemprop="name">使用 hexo + github 搭建个人博客</span>
-          </a>
+      
+
+      <footer class="post-footer">
+
         
-      </h3>
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2019-08-31T23:06:25+08:00"
-              content="2019-08-31">
-          08-31
-        </time>
-      </div>
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2020/04/21/request-block/" rel="next" title="request-block">
+                  <i class="fa fa-chevron-left"></i> request-block
+                </a>
+              
+            </div>
 
-    </header>
-  </article>
+            <span class="post-nav-divider"></span>
 
-
-
-    </div>
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2020/06/09/design_darkmode/" rel="prev" title="【转载】如何设计一款讨人喜欢的暗色主题">
+                  【转载】如何设计一款讨人喜欢的暗色主题 <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
   </div>
   
   
   
+  </article>
 
-  
-
+  </div>
 
 
           </div>
           
+    
+    <div class="comments" id="comments"></div>
+  
 
         </div>
           
@@ -311,6 +369,11 @@
 
   <aside class="sidebar">
     <div class="sidebar-inner">
+        
+        
+        
+        
+      
 
       <ul class="sidebar-nav motion-element">
         <li class="sidebar-nav-toc">
@@ -323,6 +386,8 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Swift-Quiz"><span class="nav-number">1.</span> <span class="nav-text">Swift Quiz</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Struct-和-Class-的区别，为何要引入-Struct"><span class="nav-number">1.1.</span> <span class="nav-text">Struct 和 Class 的区别，为何要引入 Struct</span></a></li></ol></li></ol></div>
+        
       </div>
       <!--/noindex-->
 
