@@ -55,20 +55,20 @@
   };
 </script>
 
-  <meta name="description" content="一个由不规范的使用 KVO 引起的 crash，出现的有些诡异。前情提要我们在一个 ViewController 中先后声明两个属性 ViewA 和 ViewB12345@interface ViewController// 注意这里声明的先后顺序@property (nonatomic, strong) ViewA *viewA;@property (nonatomic, strong) Vie">
-<meta name="keywords" content="iOS,KVO,Crash">
+  <meta name="description" content="一个由不规范的使用 KVO 引起的 crash，出现的有些诡异。问题描述我们在一个 ViewController 中先后声明两个属性 ViewA 和 ViewB12345@interface ViewController// 注意这里声明的先后顺序@property (nonatomic, strong) ViewA *viewA;@property (nonatomic, strong) Vie">
+<meta name="keywords" content="iOS,KVO,Crash,Puzzle">
 <meta property="og:type" content="article">
 <meta property="og:title" content="一个 KVO 引起的 Crash">
 <meta property="og:url" content="http://yoursite.com/2019/09/01/iOS-KVO/index.html">
 <meta property="og:site_name" content="猫咪不吃小鱼干">
-<meta property="og:description" content="一个由不规范的使用 KVO 引起的 crash，出现的有些诡异。前情提要我们在一个 ViewController 中先后声明两个属性 ViewA 和 ViewB12345@interface ViewController// 注意这里声明的先后顺序@property (nonatomic, strong) ViewA *viewA;@property (nonatomic, strong) Vie">
+<meta property="og:description" content="一个由不规范的使用 KVO 引起的 crash，出现的有些诡异。问题描述我们在一个 ViewController 中先后声明两个属性 ViewA 和 ViewB12345@interface ViewController// 注意这里声明的先后顺序@property (nonatomic, strong) ViewA *viewA;@property (nonatomic, strong) Vie">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/2019/09/01/iOS-KVO/Stack.png">
 <meta property="og:image" content="http://yoursite.com/2019/09/01/iOS-KVO/Crash.png">
-<meta property="og:updated_time" content="2019-12-14T02:26:16.895Z">
+<meta property="og:updated_time" content="2020-06-11T17:14:25.111Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="一个 KVO 引起的 Crash">
-<meta name="twitter:description" content="一个由不规范的使用 KVO 引起的 crash，出现的有些诡异。前情提要我们在一个 ViewController 中先后声明两个属性 ViewA 和 ViewB12345@interface ViewController// 注意这里声明的先后顺序@property (nonatomic, strong) ViewA *viewA;@property (nonatomic, strong) Vie">
+<meta name="twitter:description" content="一个由不规范的使用 KVO 引起的 crash，出现的有些诡异。问题描述我们在一个 ViewController 中先后声明两个属性 ViewA 和 ViewB12345@interface ViewController// 注意这里声明的先后顺序@property (nonatomic, strong) ViewA *viewA;@property (nonatomic, strong) Vie">
 <meta name="twitter:image" content="http://yoursite.com/2019/09/01/iOS-KVO/Stack.png">
   <link rel="canonical" href="http://yoursite.com/2019/09/01/iOS-KVO/">
 
@@ -271,7 +271,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2019-12-14 10:26:16" itemprop="dateModified" datetime="2019-12-14T10:26:16+08:00">2019-12-14</time>
+                <time title="Modified: 2020-06-12 01:14:25" itemprop="dateModified" datetime="2020-06-12T01:14:25+08:00">2020-06-12</time>
               </span>
             
           
@@ -329,7 +329,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>一个由不规范的使用 KVO 引起的 crash，出现的有些诡异。</p><h1 id="前情提要"><a href="#前情提要" class="headerlink" title="前情提要"></a>前情提要</h1><p>我们在一个 ViewController 中<strong>先后</strong>声明两个属性 <code>ViewA</code> 和 <code>ViewB</code></p><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">ViewController</span></span></span><br><span class="line"><span class="comment">// 注意这里声明的先后顺序</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) ViewA *viewA;</span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) ViewB *viewB;</span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure><a id="more"></a>
+        <p>一个由不规范的使用 KVO 引起的 crash，出现的有些诡异。</p><h1 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h1><p>我们在一个 ViewController 中<strong>先后</strong>声明两个属性 <code>ViewA</code> 和 <code>ViewB</code></p><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">ViewController</span></span></span><br><span class="line"><span class="comment">// 注意这里声明的先后顺序</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) ViewA *viewA;</span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) ViewB *viewB;</span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure><a id="more"></a>
 
 
 
@@ -380,6 +380,8 @@
               <a href="/tags/KVO/" rel="tag"># KVO</a>
             
               <a href="/tags/Crash/" rel="tag"># Crash</a>
+            
+              <a href="/tags/Puzzle/" rel="tag"># Puzzle</a>
             
           </div>
         
@@ -453,7 +455,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前情提要"><span class="nav-number">1.</span> <span class="nav-text">前情提要</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#问题查找"><span class="nav-number">2.</span> <span class="nav-text">问题查找</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#解决"><span class="nav-number">3.</span> <span class="nav-text">解决</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#为何-iOS-11-及以上没有出现问题"><span class="nav-number">4.</span> <span class="nav-text">为何 iOS 11 及以上没有出现问题</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#问题描述"><span class="nav-number">1.</span> <span class="nav-text">问题描述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#问题查找"><span class="nav-number">2.</span> <span class="nav-text">问题查找</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#解决"><span class="nav-number">3.</span> <span class="nav-text">解决</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#为何-iOS-11-及以上没有出现问题"><span class="nav-number">4.</span> <span class="nav-text">为何 iOS 11 及以上没有出现问题</span></a></li></ol></div>
         
       </div>
       <!--/noindex-->
@@ -471,7 +473,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">15</span>
+          <span class="site-state-item-count">17</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -497,7 +499,7 @@
             <a href="/tags/">
           
         
-        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-count">25</span>
         <span class="site-state-item-name">tags</span>
         </a>
       </div>

@@ -55,19 +55,19 @@
   };
 </script>
 
-  <meta name="description" content="一个 UIViewController 的 crash 问题，再探 loadView 机制前情提要在工程中，我们定义了一个用于展示报价的 ViewController，取名为 BaoJIaViewController。（注意这个JIa，并非本文笔误）在 BaoJIaViewController 中定义了一个类名为 BaoJiaView 的自定义视图属性该 BaoJiaView 类有个同名的 xib">
-<meta name="keywords" content="iOS,Crash,UIViewController">
+  <meta name="description" content="一个 UIViewController 的 crash 问题，再探 loadView 机制问题描述在工程中，我们定义了一个用于展示报价的 ViewController，取名为 BaoJIaViewController。（注意这个JIa，并非本文笔误）在 BaoJIaViewController 中定义了一个类名为 BaoJiaView 的自定义视图属性该 BaoJiaView 类有个同名的 xib">
+<meta name="keywords" content="UIViewController,iOS,Crash,Puzzle">
 <meta property="og:type" content="article">
 <meta property="og:title" content="[UIViewController -loadView] 中的 Crash">
 <meta property="og:url" content="http://yoursite.com/2019/09/13/UIViewController-loadView/index.html">
 <meta property="og:site_name" content="猫咪不吃小鱼干">
-<meta property="og:description" content="一个 UIViewController 的 crash 问题，再探 loadView 机制前情提要在工程中，我们定义了一个用于展示报价的 ViewController，取名为 BaoJIaViewController。（注意这个JIa，并非本文笔误）在 BaoJIaViewController 中定义了一个类名为 BaoJiaView 的自定义视图属性该 BaoJiaView 类有个同名的 xib">
+<meta property="og:description" content="一个 UIViewController 的 crash 问题，再探 loadView 机制问题描述在工程中，我们定义了一个用于展示报价的 ViewController，取名为 BaoJIaViewController。（注意这个JIa，并非本文笔误）在 BaoJIaViewController 中定义了一个类名为 BaoJiaView 的自定义视图属性该 BaoJiaView 类有个同名的 xib">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/2019/09/13/UIViewController-loadView/crash_log.png">
-<meta property="og:updated_time" content="2019-09-14T05:03:01.821Z">
+<meta property="og:updated_time" content="2020-06-11T17:14:31.691Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="[UIViewController -loadView] 中的 Crash">
-<meta name="twitter:description" content="一个 UIViewController 的 crash 问题，再探 loadView 机制前情提要在工程中，我们定义了一个用于展示报价的 ViewController，取名为 BaoJIaViewController。（注意这个JIa，并非本文笔误）在 BaoJIaViewController 中定义了一个类名为 BaoJiaView 的自定义视图属性该 BaoJiaView 类有个同名的 xib">
+<meta name="twitter:description" content="一个 UIViewController 的 crash 问题，再探 loadView 机制问题描述在工程中，我们定义了一个用于展示报价的 ViewController，取名为 BaoJIaViewController。（注意这个JIa，并非本文笔误）在 BaoJIaViewController 中定义了一个类名为 BaoJiaView 的自定义视图属性该 BaoJiaView 类有个同名的 xib">
 <meta name="twitter:image" content="http://yoursite.com/2019/09/13/UIViewController-loadView/crash_log.png">
   <link rel="canonical" href="http://yoursite.com/2019/09/13/UIViewController-loadView/">
 
@@ -270,7 +270,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2019-09-14 13:03:01" itemprop="dateModified" datetime="2019-09-14T13:03:01+08:00">2019-09-14</time>
+                <time title="Modified: 2020-06-12 01:14:31" itemprop="dateModified" datetime="2020-06-12T01:14:31+08:00">2020-06-12</time>
               </span>
             
           
@@ -328,7 +328,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>一个 UIViewController 的 crash 问题，再探 loadView 机制</p><h1 id="前情提要"><a href="#前情提要" class="headerlink" title="前情提要"></a>前情提要</h1><p>在工程中，我们定义了一个用于展示报价的 ViewController，取名为 <code>BaoJIaViewController</code>。（注意这个JIa，并非本文笔误）</p><p>在 <code>BaoJIaViewController</code> 中定义了一个类名为 <code>BaoJiaView</code> 的自定义视图属性<br>该 <code>BaoJiaView</code> 类有个同名的 xib 文件 <code>BaoJiaView.xib</code></p><a id="more"></a>
+        <p>一个 UIViewController 的 crash 问题，再探 loadView 机制</p><h1 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h1><p>在工程中，我们定义了一个用于展示报价的 ViewController，取名为 <code>BaoJIaViewController</code>。（注意这个JIa，并非本文笔误）</p><p>在 <code>BaoJIaViewController</code> 中定义了一个类名为 <code>BaoJiaView</code> 的自定义视图属性<br>该 <code>BaoJiaView</code> 类有个同名的 xib 文件 <code>BaoJiaView.xib</code></p><a id="more"></a>
 
 
 <p>在 ViewController 中对 <code>BaoJIaViewController</code> 的使用:</p>
@@ -416,11 +416,13 @@
           
           <div class="post-tags">
             
+              <a href="/tags/UIViewController/" rel="tag"># UIViewController</a>
+            
               <a href="/tags/iOS/" rel="tag"># iOS</a>
             
               <a href="/tags/Crash/" rel="tag"># Crash</a>
             
-              <a href="/tags/UIViewController/" rel="tag"># UIViewController</a>
+              <a href="/tags/Puzzle/" rel="tag"># Puzzle</a>
             
           </div>
         
@@ -494,7 +496,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前情提要"><span class="nav-number">1.</span> <span class="nav-text">前情提要</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#问题查找"><span class="nav-number">2.</span> <span class="nav-text">问题查找</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#先以公司机子为例"><span class="nav-number">2.1.</span> <span class="nav-text">先以公司机子为例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自己的电脑为例"><span class="nav-number">2.2.</span> <span class="nav-text">自己的电脑为例</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#UIViewController-loadView-探索"><span class="nav-number">3.</span> <span class="nav-text">[UIViewController loadView] 探索</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#UIViewController-nibName-探索"><span class="nav-number">4.</span> <span class="nav-text">[UIViewController nibName] 探索</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#问题描述"><span class="nav-number">1.</span> <span class="nav-text">问题描述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#问题查找"><span class="nav-number">2.</span> <span class="nav-text">问题查找</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#先以公司机子为例"><span class="nav-number">2.1.</span> <span class="nav-text">先以公司机子为例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自己的电脑为例"><span class="nav-number">2.2.</span> <span class="nav-text">自己的电脑为例</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#UIViewController-loadView-探索"><span class="nav-number">3.</span> <span class="nav-text">[UIViewController loadView] 探索</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#UIViewController-nibName-探索"><span class="nav-number">4.</span> <span class="nav-text">[UIViewController nibName] 探索</span></a></li></ol></div>
         
       </div>
       <!--/noindex-->
@@ -512,7 +514,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">15</span>
+          <span class="site-state-item-count">17</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -538,7 +540,7 @@
             <a href="/tags/">
           
         
-        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-count">25</span>
         <span class="site-state-item-name">tags</span>
         </a>
       </div>

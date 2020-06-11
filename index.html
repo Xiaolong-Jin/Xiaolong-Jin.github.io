@@ -223,6 +223,224 @@
   
   
   <div class="post-block home">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/06/11/bridging-nil-from-OC-to-Swift/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xiaolong.jin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="猫咪不吃小鱼干">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+            
+            <a href="/2020/06/11/bridging-nil-from-OC-to-Swift/" class="post-title-link" itemprop="url">Bridging nil from OC to Swift</a>
+          
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2020-06-11 21:40:04" itemprop="dateCreated datePublished" datetime="2020-06-11T21:40:04+08:00">2020-06-11</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-06-12 01:26:05" itemprop="dateModified" datetime="2020-06-12T01:26:05+08:00">2020-06-12</time>
+              </span>
+            
+          
+
+          
+            <span id="/2020/06/11/bridging-nil-from-OC-to-Swift/" class="post-meta-item leancloud_visitors" data-flag-title="Bridging nil from OC to Swift" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+        
+      
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2020/06/11/bridging-nil-from-OC-to-Swift/#comments" itemprop="discussionUrl"><span class="post-comments-count valine-comment-count" data-xid="/2020/06/11/bridging-nil-from-OC-to-Swift/" itemprop="commentCount"></span></a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>环境：</p><ul>
+<li>Swift 5,</li>
+<li>Xcode 11.5</li>
+<li><a href="https://github.com/swiftneko/Puzzle_NilFromOCToSwift" target="_blank" rel="noopener">示例代码</a></li>
+</ul><hr><h1 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h1><p>公司项目中用到了 Swift 和 OC 混编，有一个 OC 写的自定义 TableView。由于不规范的的写法，在 <code>nonnull</code> 标记返回值的方法中返回了 <code>nil</code>。</p><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// OCTableView.h</span></span><br><span class="line"><span class="built_in">NS_ASSUME_NONNULL_BEGIN</span></span><br><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">OCTableView</span> : <span class="title">UIView</span></span></span><br><span class="line">- (<span class="built_in">UITableViewCell</span> *)cellMayReturnNil;</span><br><span class="line"><span class="keyword">@end</span></span><br><span class="line"><span class="built_in">NS_ASSUME_NONNULL_END</span></span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+          
+            <div class="post-button text-center">
+              <a class="btn" href="/2020/06/11/bridging-nil-from-OC-to-Swift/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+          <div class="post-eof"></div>
+        
+      </footer>
+  </div>
+  
+  
+  
+  </article>
+
+    
+        <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block home">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/06/11/sdwebimage/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xiaolong.jin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="猫咪不吃小鱼干">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+            
+            <a href="/2020/06/11/sdwebimage/" class="post-title-link" itemprop="url">SDWebImage 源码阅读时的知识点</a>
+          
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2020-06-11 19:58:33 / Modified: 22:16:14" itemprop="dateCreated datePublished" datetime="2020-06-11T19:58:33+08:00">2020-06-11</time>
+            </span>
+          
+            
+
+            
+          
+
+          
+            <span id="/2020/06/11/sdwebimage/" class="post-meta-item leancloud_visitors" data-flag-title="SDWebImage 源码阅读时的知识点" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+        
+      
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2020/06/11/sdwebimage/#comments" itemprop="discussionUrl"><span class="post-comments-count valine-comment-count" data-xid="/2020/06/11/sdwebimage/" itemprop="commentCount"></span></a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="dispatch-main-async-safe"><a href="#dispatch-main-async-safe" class="headerlink" title="dispatch_main_async_safe"></a>dispatch_main_async_safe</h2><p>SD 中的版本</p><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#ifndef dispatch_main_async_safe</span></span><br><span class="line"><span class="meta">#define dispatch_main_async_safe(block)\</span></span><br><span class="line">    <span class="keyword">if</span> (dispatch_queue_get_label(DISPATCH_CURRENT_QUEUE_LABEL) == dispatch_queue_get_label(dispatch_get_main_queue())) &#123;\</span><br><span class="line">        block();\</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;\</span><br><span class="line">        <span class="built_in">dispatch_async</span>(dispatch_get_main_queue(), block);\</span><br><span class="line">    &#125;</span><br><span class="line"><span class="meta">#endif</span></span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+          
+            <div class="post-button text-center">
+              <a class="btn" href="/2020/06/11/sdwebimage/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+          <div class="post-eof"></div>
+        
+      </footer>
+  </div>
+  
+  
+  
+  </article>
+
+    
+        <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block home">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/06/09/design_darkmode/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -482,11 +700,19 @@
                 
               
 
-              <time title="Created: 2020-04-21 17:48:52 / Modified: 17:51:27" itemprop="dateCreated datePublished" datetime="2020-04-21T17:48:52+08:00">2020-04-21</time>
+              <time title="Created: 2020-04-21 17:48:52" itemprop="dateCreated datePublished" datetime="2020-04-21T17:48:52+08:00">2020-04-21</time>
             </span>
           
             
 
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-06-11 22:16:00" itemprop="dateModified" datetime="2020-06-11T22:16:00+08:00">2020-06-11</time>
+              </span>
             
           
 
@@ -587,11 +813,19 @@
                 
               
 
-              <time title="Created: 2020-03-28 16:23:51 / Modified: 16:26:11" itemprop="dateCreated datePublished" datetime="2020-03-28T16:23:51+08:00">2020-03-28</time>
+              <time title="Created: 2020-03-28 16:23:51" itemprop="dateCreated datePublished" datetime="2020-03-28T16:23:51+08:00">2020-03-28</time>
             </span>
           
             
 
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-06-11 22:17:25" itemprop="dateModified" datetime="2020-06-11T22:17:25+08:00">2020-06-11</time>
+              </span>
             
           
 
@@ -698,7 +932,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-06-09 23:33:13" itemprop="dateModified" datetime="2020-06-09T23:33:13+08:00">2020-06-09</time>
+                <time title="Modified: 2020-06-11 22:16:38" itemprop="dateModified" datetime="2020-06-11T22:16:38+08:00">2020-06-11</time>
               </span>
             
           
@@ -811,7 +1045,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-03-19 23:54:43" itemprop="dateModified" datetime="2020-03-19T23:54:43+08:00">2020-03-19</time>
+                <time title="Modified: 2020-06-11 22:17:03" itemprop="dateModified" datetime="2020-06-11T22:17:03+08:00">2020-06-11</time>
               </span>
             
           
@@ -1119,224 +1353,6 @@
   </article>
 
     
-        <article itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block home">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/02/password-autofill/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="xiaolong.jin">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="猫咪不吃小鱼干">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-            
-            <a href="/2019/11/02/password-autofill/" class="post-title-link" itemprop="url">iOS 自动密码填充</a>
-          
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              
-                
-              
-
-              <time title="Created: 2019-11-02 08:42:30" itemprop="dateCreated datePublished" datetime="2019-11-02T08:42:30+08:00">2019-11-02</time>
-            </span>
-          
-            
-
-            
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2019-11-08 10:04:28" itemprop="dateModified" datetime="2019-11-08T10:04:28+08:00">2019-11-08</time>
-              </span>
-            
-          
-
-          
-            <span id="/2019/11/02/password-autofill/" class="post-meta-item leancloud_visitors" data-flag-title="iOS 自动密码填充" title="Views">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">Views: </span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-        
-      
-      <span class="post-meta-item-text">Valine: </span>
-    
-    <a title="valine" href="/2019/11/02/password-autofill/#comments" itemprop="discussionUrl"><span class="post-comments-count valine-comment-count" data-xid="/2019/11/02/password-autofill/" itemprop="commentCount"></span></a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="工作流程"><a href="#工作流程" class="headerlink" title="工作流程"></a>工作流程</h1><ul>
-<li>安装app的时候，系统会读取 Associated Domains Entitlement 中的 domains</li>
-<li>从 domains(需支持https) 下载 apple-app-site-association 文件</li>
-<li>如果 apple-app-site-association 文件中包含当前 App ID，则开启 Password Autofill 功能</li>
-</ul>
-          <!--noindex-->
-          
-            <div class="post-button text-center">
-              <a class="btn" href="/2019/11/02/password-autofill/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-          <div class="post-eof"></div>
-        
-      </footer>
-  </div>
-  
-  
-  
-  </article>
-
-    
-        <article itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block home">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/10/05/SS-based-on-AWS-EC2/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="xiaolong.jin">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="猫咪不吃小鱼干">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-            
-            <a href="/2019/10/05/SS-based-on-AWS-EC2/" class="post-title-link" itemprop="url">科学上网：基于 AWS EC2 搭建免费的 SS 全过程</a>
-          
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              
-                
-              
-
-              <time title="Created: 2019-10-05 08:55:51 / Modified: 15:10:31" itemprop="dateCreated datePublished" datetime="2019-10-05T08:55:51+08:00">2019-10-05</time>
-            </span>
-          
-            
-
-            
-          
-
-          
-            <span id="/2019/10/05/SS-based-on-AWS-EC2/" class="post-meta-item leancloud_visitors" data-flag-title="科学上网：基于 AWS EC2 搭建免费的 SS 全过程" title="Views">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">Views: </span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-        
-      
-      <span class="post-meta-item-text">Valine: </span>
-    
-    <a title="valine" href="/2019/10/05/SS-based-on-AWS-EC2/#comments" itemprop="discussionUrl"><span class="post-comments-count valine-comment-count" data-xid="/2019/10/05/SS-based-on-AWS-EC2/" itemprop="commentCount"></span></a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>原文地址：<a href="http://cqwdc.com/post/7ebafa90.html" target="_blank" rel="noopener">http://cqwdc.com/post/7ebafa90.html</a></p><h1 id="科学上网"><a href="#科学上网" class="headerlink" title="科学上网"></a>科学上网</h1><p><strong>科学上网仅作访问国外计算机开发相关的资源，技术学习交流之用，切勿违反国家法律法规。</strong></p><p>首先我们需要一个能够连通外网的服务器，这里首选 AWS（因为新用户注册可以免费使用一年，每月750小时，15G流量。但是必须有信用卡）</p>
-          <!--noindex-->
-          
-            <div class="post-button text-center">
-              <a class="btn" href="/2019/10/05/SS-based-on-AWS-EC2/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-          <div class="post-eof"></div>
-        
-      </footer>
-  </div>
-  
-  
-  
-  </article>
-
-    
   </div>
 
   
@@ -1389,7 +1405,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">15</span>
+          <span class="site-state-item-count">17</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -1415,7 +1431,7 @@
             <a href="/tags/">
           
         
-        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-count">25</span>
         <span class="site-state-item-name">tags</span>
         </a>
       </div>
