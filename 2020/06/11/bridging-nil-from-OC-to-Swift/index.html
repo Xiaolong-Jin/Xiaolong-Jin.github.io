@@ -63,10 +63,15 @@
 <meta property="og:site_name" content="猫咪不吃小鱼干">
 <meta property="og:description" content="环境： Swift 5, Xcode 11.5 示例代码 问题描述公司项目中用到了 Swift 和 OC 混编，有一个 OC 写的自定义 TableView。由于不规范的的写法，在 nonnull 标记返回值的方法中返回了 nil。123456// OCTableView.hNS_ASSUME_NONNULL_BEGIN@interface OCTableView : UIView- (UITab">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-06-11T17:28:53.023Z">
+<meta property="og:image" content="http://yoursite.com/2020/06/11/bridging-nil-from-OC-to-Swift/swift-compile-optimization.png">
+<meta property="og:image" content="http://yoursite.com/2020/06/11/bridging-nil-from-OC-to-Swift/v-is-nil.png">
+<meta property="og:image" content="http://yoursite.com/2020/06/11/bridging-nil-from-OC-to-Swift/-O.png">
+<meta property="og:image" content="http://yoursite.com/2020/06/11/bridging-nil-from-OC-to-Swift/-Onone.png">
+<meta property="og:updated_time" content="2020-06-12T14:25:12.699Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Bridging nil from OC to Swift">
 <meta name="twitter:description" content="环境： Swift 5, Xcode 11.5 示例代码 问题描述公司项目中用到了 Swift 和 OC 混编，有一个 OC 写的自定义 TableView。由于不规范的的写法，在 nonnull 标记返回值的方法中返回了 nil。123456// OCTableView.hNS_ASSUME_NONNULL_BEGIN@interface OCTableView : UIView- (UITab">
+<meta name="twitter:image" content="http://yoursite.com/2020/06/11/bridging-nil-from-OC-to-Swift/swift-compile-optimization.png">
   <link rel="canonical" href="http://yoursite.com/2020/06/11/bridging-nil-from-OC-to-Swift/">
 
 
@@ -268,7 +273,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-06-12 01:28:53" itemprop="dateModified" datetime="2020-06-12T01:28:53+08:00">2020-06-12</time>
+                <time title="Modified: 2020-06-12 22:25:12" itemprop="dateModified" datetime="2020-06-12T22:25:12+08:00">2020-06-12</time>
               </span>
             
           
@@ -330,8 +335,60 @@
 <figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> cell: <span class="type">OCTableViewCell!</span> = (tableView.cellMayReturnNil() <span class="keyword">as</span>? <span class="type">OCTableViewCell</span>)</span><br></pre></td></tr></table></figure>
 
 <p>在 Release 模式下运行一下，发现问题解决了。。。ಥ_ಥ</p>
-<p><strong>猜测: 应该是 Release 模式下代码被优化了，实际返回的也许是是一个 <code>Optional&lt;Optional&lt;UITableViewCell&gt;&gt;</code>，其值是 .some(.none)</strong></p>
-<h1 id="探究"><a href="#探究" class="headerlink" title="探究"></a>探究</h1><p>明儿探究</p>
+<p><strong>猜测1: 应该是 Release 模式下代码被优化了，实际返回的也许是是一个 <code>Optional&lt;Optional&lt;UITableViewCell&gt;&gt;</code>，其值是 .some(.none)</strong></p>
+<h1 id="探究"><a href="#探究" class="headerlink" title="探究"></a>探究</h1><p>在使用 Release 模式运行的时候，Console 中输出了一段话。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SwiftWithOC was compiled with optimization - stepping may behave oddly; variables may not be available.</span><br></pre></td></tr></table></figure>
+
+<p>因为 Release 下编译优化的原因，我们不能直接查看返回的 <code>cell</code> 的值。</p>
+<p>先将编译优化关闭试试。在工程的 Build Settings 中将下面 Release 的值改成 Debug 一样的 <code>No Optimization</code>。<br><img src="/2020/06/11/bridging-nil-from-OC-to-Swift/swift-compile-optimization.png" alt></p>
+<p>运行以后发现：<strong>和 Debug 运行模式下表现形式一致了，<code>cell == nil</code> 的结果变成了 <code>true</code>。果然是因为代码优化的原因。</strong></p>
+<p>但是，在优化以后的 Release 模式下，返回的 <code>cell</code> 到底是什么值呢？</p>
+<p>通过 <code>type(of:)</code> 操作符打印 <code>cell</code> 的类型，可以看到其结果为 <code>Optional&lt;OCTableViewCell&gt;</code>。看来我们猜测的结果套娃套多了。。</p>
+<p>既然是 <code>Optional</code> 类型，那么其本质就是一个 <code>enum</code>。我们可以用 <code>switch-case</code> 语句来判断。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">switch</span> cell &#123;</span><br><span class="line"><span class="keyword">case</span> .<span class="keyword">none</span>:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">"cell is nil"</span>)</span><br><span class="line"><span class="keyword">case</span> .some(<span class="keyword">let</span> v):</span><br><span class="line">    <span class="keyword">if</span> v == <span class="literal">nil</span> &#123;</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">"v == nil"</span>)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">"v != nil"</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们分别在未优化的 Debug 模式和优化后的 Release 模式下，运行上面的 <code>switch-case</code> 语句。</p>
+<p>我们看到 Debug 模式下，其进入了 <code>case .none</code> 分支。<br>而 Release 模式下，其结果打印了 <code>v != nil</code>，是在该行加断点以后，我们可以发现。<br><img src="/2020/06/11/bridging-nil-from-OC-to-Swift/v-is-nil.png" alt></p>
+<p>嗯哼？<strong>明明其值是 <code>0x0000...000</code>，但它却不是 <code>nil</code>。</strong><br>而且 Xcode 也提示了: <em>⚠️ Comparing non-optional value of type ‘OCTableViewCell’ to ‘nil’ always returns false</em></p>
+<p><strong>猜测2：只有 Optional.none 才会 == nil？ Swift 中 == nil 是如何实现的？</strong></p>
+<p>Google 一番以后，在 SO 上找到一个提问 <a href="https://stackoverflow.com/a/33209762" target="_blank" rel="noopener">Swift Optional type: how .None == nil works</a></p>
+<p>有一个回答指出，Swift 中 <code>== nil</code> 的判断，实际上是走了 <code>==</code> 运算符的一个重载方法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">public func ==&lt;T&gt;(lhs: T?, rhs: _OptionalNilComparisonType) -&gt; Bool</span><br></pre></td></tr></table></figure>
+
+<p>对于 <code>nil==</code>，我们可以在回答指出 <a href="https://github.com/andelf/Defines-Swift/blob/master/Swift.swift" target="_blank" rel="noopener">https://github.com/andelf/Defines-Swift/blob/master/Swift.swift</a> 中找到另一个重载方法。以及 <code>_OptionalNilComparisonType</code> 的定义。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">func ==&lt;T&gt;(lhs: _OptionalNilComparisonType, rhs: T?) -&gt; Bool</span><br><span class="line"></span><br><span class="line">struct _OptionalNilComparisonType : NilLiteralConvertible &#123;</span><br><span class="line">  init(nilLiteral: ())</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们知道，对于 <code>T?</code> 类型的参数，我们传入一个类型为 <code>T</code> 的数据，会被自动包装成 <code>T?</code>（以前以为会编译不过，不能匹配😓）</p>
+<p>也就是说，我们的 <code>v</code>（其值为 <code>0x0000...000</code> 的 <code>OCTableViewCell</code>） 在进行 <code>v == nil</code> 判断的时候，再次被包装成了 <code>Optional&lt;OCTableViewCell&gt;</code></p>
+<p>我们再通过 <a href="https://github.com/apple/swift.git" target="_blank" rel="noopener">Swift 源码</a>，找到上述方法的实现：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">@_transparent</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="function"><span class="keyword">func</span> ==<span class="params">(lhs: Wrapped?, rhs: _OptionalNilComparisonType)</span></span> -&gt; <span class="type">Bool</span> &#123;</span><br><span class="line">  <span class="keyword">switch</span> lhs &#123;</span><br><span class="line">  <span class="keyword">case</span> .some:</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">  <span class="keyword">case</span> .<span class="keyword">none</span>:</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们可以看到，其内部只是做了一个 <code>switch-case</code> 判断，怪不得我们的 <code>v == nil</code> 会返回 <code>false</code> 了。</p>
+<ul>
+<li><p>关于<code>@_transparent</code>，可以参考喵神的 <a href="https://xiaozhuanlan.com/topic/1046572983" target="_blank" rel="noopener">简单又不简单的 Bool - Swift 标准库源码导读 (二)</a></p>
+</li>
+<li><p>为何要使用<code>_OptionalNilComparisonType</code>，而不直接使用 <code>NilLiteralConvertible</code>：如果使用 <code>NilLiteralConvertible</code>, 则任何实现了该协议的类型都会被匹配到。以下代码在编译的时候毫无问题：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">extension</span> <span class="title">String</span>: <span class="title">ExpressibleByNilLiteral</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">init</span>(nilLiteral: ()) &#123;</span><br><span class="line">        <span class="keyword">self</span> = <span class="string">"null"</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">myequal</span>&lt;T&gt; <span class="params">(<span class="number">_</span> lhs: T?, <span class="number">_</span> rhs: ExpressibleByNilLiteral)</span></span> -&gt; <span class="type">Bool</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">&#125;</span><br><span class="line">myequal(<span class="keyword">self</span>, <span class="string">""</span>)</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p><strong>猜测3:Release 时的优化到底做了什么，导致最终的表现差异？</strong></p>
+<p>猜测：  </p>
+<ul>
+<li>不开起优化和（开启优化，但写成 <code>as? OCTableViewCell</code>）这两种情况下，会先对返回值进行非空判断。如果为空，则将接收变量赋值为 <code>Optional.none</code>，如果不为空，则赋值为 <code>Optional.some(value)</code>；  </li>
+<li>开启优化后，直接跳过非空判断，将接收变量赋值为 <code>Optional.some(value)</code>，即使这个 value 所指向的内存地址 <code>0x00...00</code> 在 OC 意义上就是 <code>nil</code>，但在 swift 中，它就是一个分配在 <code>0x00...00</code> 上的一个未初始化的 <code>OCTableViewCell</code> 对象。</li>
+</ul>
+<p>对于这一段的猜测，由于才疏学浅，等有机会再做验证。</p>
+<p>以下是不同情况下的 IDA 中的伪代码。</p>
+<p>-O<br><img src="/2020/06/11/bridging-nil-from-OC-to-Swift/-O.png" alt="-O"></p>
+<p>-Onone<br><img src="/2020/06/11/bridging-nil-from-OC-to-Swift/-Onone.png" alt="-Onone"></p>
+<p><a href="https://swift.org/blog/osize/" target="_blank" rel="noopener">https://swift.org/blog/osize/</a></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>OC 中一定要准确使用 <code>nullable</code>, <code>nonnull</code>, <code>null_resettable</code>, <code>NS_ASSUME_NONNULL_BEGIN</code>, <code>NS_ASSUME_NONNULL_END</code> 等修饰词。</p>
+<p>对于 OC 中被标记为 <code>nonnull</code> 实际返回 <code>nil</code> 的方法，可使用 <code>as?</code> 转换。</p>
+<p>即使是纯 Swift 中，也应当慎用 <code>as!</code> 强制转换。</p>
+<h1 id="引申"><a href="#引申" class="headerlink" title="引申"></a>引申</h1><p><code>as? String</code>, <code>as string</code>, <code>as String?</code> 的区别和使用场景？</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> aString: <span class="type">NSString</span> = <span class="string">""</span></span><br><span class="line"><span class="keyword">let</span> <span class="number">_</span>: <span class="type">String</span> = aString <span class="keyword">as</span> <span class="type">String</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> anOptionalString: <span class="type">NSString?</span> = <span class="string">""</span></span><br><span class="line"><span class="keyword">let</span> <span class="number">_</span>: <span class="type">String?</span> = anOptionalString <span class="keyword">as</span> <span class="type">String?</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> anObject: <span class="type">NSObject?</span> = <span class="literal">nil</span></span><br><span class="line"><span class="keyword">let</span> <span class="number">_</span>: <span class="type">String?</span> = anObject <span class="keyword">as</span>? <span class="type">String</span></span><br></pre></td></tr></table></figure>
+
 
     </div>
 
@@ -427,7 +484,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#问题描述"><span class="nav-number">1.</span> <span class="nav-text">问题描述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#解决"><span class="nav-number">2.</span> <span class="nav-text">解决</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#探究"><span class="nav-number">3.</span> <span class="nav-text">探究</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#问题描述"><span class="nav-number">1.</span> <span class="nav-text">问题描述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#解决"><span class="nav-number">2.</span> <span class="nav-text">解决</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#探究"><span class="nav-number">3.</span> <span class="nav-text">探究</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#引申"><span class="nav-number">5.</span> <span class="nav-text">引申</span></a></li></ol></div>
         
       </div>
       <!--/noindex-->
