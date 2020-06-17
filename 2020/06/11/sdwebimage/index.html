@@ -63,7 +63,7 @@
 <meta property="og:site_name" content="猫咪不吃小鱼干">
 <meta property="og:description" content="dispatch_main_async_safeSD 中的版本12345678#ifndef dispatch_main_async_safe#define dispatch_main_async_safe(block)\    if (dispatch_queue_get_label(DISPATCH_CURRENT_QUEUE_LABEL) == dispatch_queue_get_labe">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-06-11T14:16:14.255Z">
+<meta property="og:updated_time" content="2020-06-17T15:07:17.449Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="SDWebImage 源码阅读时的知识点">
 <meta name="twitter:description" content="dispatch_main_async_safeSD 中的版本12345678#ifndef dispatch_main_async_safe#define dispatch_main_async_safe(block)\    if (dispatch_queue_get_label(DISPATCH_CURRENT_QUEUE_LABEL) == dispatch_queue_get_labe">
@@ -257,11 +257,19 @@
                 
               
 
-              <time title="Created: 2020-06-11 19:58:33 / Modified: 22:16:14" itemprop="dateCreated datePublished" datetime="2020-06-11T19:58:33+08:00">2020-06-11</time>
+              <time title="Created: 2020-06-11 19:58:33" itemprop="dateCreated datePublished" datetime="2020-06-11T19:58:33+08:00">2020-06-11</time>
             </span>
           
             
 
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-06-17 23:07:17" itemprop="dateModified" datetime="2020-06-17T23:07:17+08:00">2020-06-17</time>
+              </span>
             
           
 
@@ -311,7 +319,11 @@
 <blockquote>
 <p>在主线程的非主队列中调用一些诸如 VektorKit 中的，会检查自身是否在主队列上执行的 API 时，会产生错误。</p>
 </blockquote>
-<p>从中可以看出： <strong>在主线程上执行的并非一定是主队列，但是主队列一定在主线程上执行</strong></p>
+<p>我们可以看一个例子：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">dispatch_sync</span>(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>), ^&#123;</span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"%d"</span>, <span class="built_in">NSThread</span>.isMainThread);</span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"%d"</span>, dispatch_queue_get_label(DISPATCH_CURRENT_QUEUE_LABEL) == dispatch_queue_get_label(dispatch_get_main_queue()));</span><br><span class="line">&#125;);</span><br><span class="line"><span class="comment">// 打印结果</span></span><br><span class="line"><span class="comment">// 0</span></span><br><span class="line"><span class="comment">// 1</span></span><br></pre></td></tr></table></figure>
+
+<p>大家都知道，线程的上下文切换是非常耗费资源的，所以 <code>dispatch_sync</code> 到非主线程的 block 方法，会直接在当前线程中执行。</p>
+<p><strong>总结：在主线程上执行的并非一定是主队列，但是主队列一定在主线程上执行</strong></p>
 
     </div>
 
