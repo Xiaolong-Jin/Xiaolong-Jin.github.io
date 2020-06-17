@@ -55,17 +55,17 @@
   };
 </script>
 
-  <meta name="description" content="UIDynamicProviderColorUIDynamicProviderColor 是 iOS13 中为了适配 Dark Mode 而新增一个 UIColor 的子类如何自定义实现一个 XLDynamicProviderColor？">
+  <meta name="description" content="UIDynamicProviderColor, UIDynamicColor 是 iOS13 中为了适配 Dark Mode 而新增两个个 UIColor 的子类。从名字上看，UIDynamicProviderColor 是封装了自定义 Provider 的 UIDynamicColor。12345// 继承关系NSObject |__ UIColor      |__ UIDynamicColo">
 <meta property="og:type" content="article">
 <meta property="og:title" content="UIDynamicProviderColor">
 <meta property="og:url" content="http://yoursite.com/2019/10/04/UIDynamicProviderColor/index.html">
 <meta property="og:site_name" content="猫咪不吃小鱼干">
-<meta property="og:description" content="UIDynamicProviderColorUIDynamicProviderColor 是 iOS13 中为了适配 Dark Mode 而新增一个 UIColor 的子类如何自定义实现一个 XLDynamicProviderColor？">
+<meta property="og:description" content="UIDynamicProviderColor, UIDynamicColor 是 iOS13 中为了适配 Dark Mode 而新增两个个 UIColor 的子类。从名字上看，UIDynamicProviderColor 是封装了自定义 Provider 的 UIDynamicColor。12345// 继承关系NSObject |__ UIColor      |__ UIDynamicColo">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-11-10T08:56:57.279Z">
+<meta property="og:updated_time" content="2020-06-17T13:12:47.437Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="UIDynamicProviderColor">
-<meta name="twitter:description" content="UIDynamicProviderColorUIDynamicProviderColor 是 iOS13 中为了适配 Dark Mode 而新增一个 UIColor 的子类如何自定义实现一个 XLDynamicProviderColor？">
+<meta name="twitter:description" content="UIDynamicProviderColor, UIDynamicColor 是 iOS13 中为了适配 Dark Mode 而新增两个个 UIColor 的子类。从名字上看，UIDynamicProviderColor 是封装了自定义 Provider 的 UIDynamicColor。12345// 继承关系NSObject |__ UIColor      |__ UIDynamicColo">
   <link rel="canonical" href="http://yoursite.com/2019/10/04/UIDynamicProviderColor/">
 
 
@@ -267,7 +267,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2019-11-10 16:56:57" itemprop="dateModified" datetime="2019-11-10T16:56:57+08:00">2019-11-10</time>
+                <time title="Modified: 2020-06-17 21:12:47" itemprop="dateModified" datetime="2020-06-17T21:12:47+08:00">2020-06-17</time>
               </span>
             
           
@@ -305,7 +305,40 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="UIDynamicProviderColor"><a href="#UIDynamicProviderColor" class="headerlink" title="UIDynamicProviderColor"></a>UIDynamicProviderColor</h1><p>UIDynamicProviderColor 是 iOS13 中为了适配 Dark Mode 而新增一个 UIColor 的子类<br>如何自定义实现一个 XLDynamicProviderColor？</p>
+        <p><code>UIDynamicProviderColor</code>, <code>UIDynamicColor</code> 是 iOS13 中为了适配 Dark Mode 而新增两个个 <code>UIColor</code> 的子类。</p><p>从名字上看，<code>UIDynamicProviderColor</code> 是封装了自定义 <code>Provider</code> 的 <code>UIDynamicColor</code>。</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// 继承关系</span><br><span class="line">NSObject</span><br><span class="line"> |__ UIColor</span><br><span class="line">      |__ UIDynamicColor</span><br><span class="line">           |__ UIDynamicProviderColor</span><br></pre></td></tr></table></figure><a id="more"></a>
+
+
+
+<p>那么它们的工作原理是什么呢？如何手动实现一个类似功能的 <code>UIColor</code> 子类，使其支持 iOS13 以下的系统呢？</p>
+<h2 id="初探"><a href="#初探" class="headerlink" title="初探"></a>初探</h2><p>我们可以使用 runtime 的方法，获取到 <code>UIDynamicProviderColor</code> 的所有属性和方法。<br>我们可以注意到如下的几个私有方法。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// UIDynamicColor</span></span><br><span class="line">_isDynamic</span><br><span class="line">_isDeepColor</span><br><span class="line">isPatternColor</span><br><span class="line">_highContrastDynamicColor</span><br><span class="line">_backgroundColorIgnoringHighContrast</span><br><span class="line">_resolvedColorWithTraitCollection:</span><br><span class="line"></span><br><span class="line"><span class="comment">// UIDynamicProviderColor</span></span><br><span class="line">_resolvedColorWithTraitCollection:</span><br></pre></td></tr></table></figure>
+
+<p>其中 <code>_isDynamic</code>，顾名思义，就是判断当前的 <code>UIColor</code> 对象是否是动态颜色。</p>
+<p>我们来简单实现一个，就叫做 <code>XLDynamicColor</code> 吧。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">XLDynamicColor</span> : <span class="title">UIColor</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">XLDynamicColor</span></span></span><br><span class="line"></span><br><span class="line">- (<span class="built_in">BOOL</span>)_isDynamic &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">YES</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
+
+<p>创建一个，赋值给 View 的背景色：<br><code>view.backgroundColor = [[XLDynamicColor alloc] init];</code></p>
+<p>Run~ Run~ Crash!</p>
+<p>Xcode 爆出一个错误</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">'*** -CGColor not defined for the UIColor &lt;XLDynamicColor: 0x600000014280&gt;; need to first convert colorspace.'</span></span><br></pre></td></tr></table></figure>
+
+<p>缺啥补啥，给 <code>XLDynamicColor</code> 加上一个 <code>CGColor</code> 方法。颜色暂定为红色就好。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="built_in">CGColorRef</span>)<span class="built_in">CGColor</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">UIColor</span>.redColor.CGColor;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可是，我们要怎么去随着系统主题改变我们的颜色呢？<br>我们在<code>UIColor(DynamicColors)</code> 分类中发现了一个方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">- (UIColor *)resolvedColorWithTraitCollection:(UITraitCollection *)traitCollection;</span><br></pre></td></tr></table></figure>
+
+<p>根据其注释</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">// Resolve any color to its most fundamental form (a non-dynamic color) for a specific trait collection.</span><br></pre></td></tr></table></figure>
+
+<p>猜测是系统主题变更后，会先根据 <code>isDynamic</code> 判断我们的颜色是不是动态颜色，然后根据该方法取出主题对应的<strong>非</strong>动态颜色。</p>
+<p>好的，再来改造一下我们的 <code>XLDynamicColor</code>:</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">XLDynamicColor</span> ()</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) <span class="built_in">UIColor</span> *colorForLight;</span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) <span class="built_in">UIColor</span> *colorForDark;</span><br><span class="line"><span class="keyword">@end</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">XLDynamicColor</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">/// 先简单点，浅色使用 colorForLight，深色使用 colorForDark</span></span><br><span class="line">- (<span class="keyword">instancetype</span>)initWithColorForLight:(<span class="built_in">UIColor</span> *)colorForLight colorForDark:(<span class="built_in">UIColor</span> *)colorForDark &#123;</span><br><span class="line">    <span class="keyword">self</span> = [<span class="keyword">super</span> init];</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">self</span>) &#123;</span><br><span class="line">        _colorForLight = colorForLight;</span><br><span class="line">        _colorForDark = colorForDark;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">self</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="built_in">BOOL</span>)_isDynamic &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">YES</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="built_in">CGColorRef</span>)<span class="built_in">CGColor</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> [<span class="keyword">self</span> resolvedColorWithTraitCollection:<span class="built_in">UITraitCollection</span>.currentTraitCollection].CGColor;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="built_in">UIColor</span> *)resolvedColorWithTraitCollection:(<span class="built_in">UITraitCollection</span> *)traitCollection &#123;</span><br><span class="line">    <span class="keyword">if</span> (traitCollection.userInterfaceStyle == <span class="built_in">UIUserInterfaceStyleDark</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> _colorForDark;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> _colorForLight;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">self</span>.view.backgroundColor = [[XLDynamicColor alloc] initWithColorForLight:<span class="built_in">UIColor</span>.greenColor colorForDark:<span class="built_in">UIColor</span>.yellowColor];</span><br></pre></td></tr></table></figure>
+
+<p>Run~ Run~ Done!</p>
+<p>通过改变系统的主题模式，我们可以看到背景色确实发生了动态改变。</p>
 
     </div>
 
@@ -386,7 +419,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#UIDynamicProviderColor"><span class="nav-number">1.</span> <span class="nav-text">UIDynamicProviderColor</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#初探"><span class="nav-number">1.</span> <span class="nav-text">初探</span></a></li></ol></div>
         
       </div>
       <!--/noindex-->
